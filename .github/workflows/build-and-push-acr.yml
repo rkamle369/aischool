@@ -9,6 +9,27 @@ on:
       - "livekit-agent/**"
       - ".github/workflows/build-and-push-acr.yml"
   workflow_dispatch:
+    inputs:
+      build_aiagents_frontend:
+        description: "Build aiagents-frontend image"
+        required: false
+        default: false
+        type: boolean
+      build_frontend:
+        description: "Build frontend image"
+        required: false
+        default: false
+        type: boolean
+      build_backend:
+        description: "Build backend image"
+        required: false
+        default: false
+        type: boolean
+      build_livekit_agent:
+        description: "Build livekit-agent image"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -41,7 +62,9 @@ jobs:
 
   build-aiagents-frontend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.aiagents_frontend == 'true'
+    if: |
+      needs.detect-changes.outputs.aiagents_frontend == 'true' ||
+      (github.event_name == 'workflow_dispatch' && inputs.build_aiagents_frontend == true)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -78,7 +101,9 @@ jobs:
 
   build-frontend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.frontend == 'true'
+    if: |
+      needs.detect-changes.outputs.frontend == 'true' ||
+      (github.event_name == 'workflow_dispatch' && inputs.build_frontend == true)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -115,7 +140,9 @@ jobs:
 
   build-backend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.backend == 'true'
+    if: |
+      needs.detect-changes.outputs.backend == 'true' ||
+      (github.event_name == 'workflow_dispatch' && inputs.build_backend == true)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -152,7 +179,9 @@ jobs:
 
   build-livekit-agent:
     needs: detect-changes
-    if: needs.detect-changes.outputs.livekit_agent == 'true'
+    if: |
+      needs.detect-changes.outputs.livekit_agent == 'true' ||
+      (github.event_name == 'workflow_dispatch' && inputs.build_livekit_agent == true)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

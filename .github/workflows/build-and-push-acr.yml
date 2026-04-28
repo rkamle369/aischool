@@ -87,8 +87,6 @@ jobs:
           images: ${{ secrets.ACR_LOGIN_SERVER }}/aiagents-frontend
           tags: |
             type=raw,value=${{ github.run_id }}
-            type=sha
-            type=ref,event=branch
 
       - name: Build and push aiagents-frontend
         uses: docker/build-push-action@v6
@@ -126,8 +124,6 @@ jobs:
           images: ${{ secrets.ACR_LOGIN_SERVER }}/frontend
           tags: |
             type=raw,value=${{ github.run_id }}
-            type=sha
-            type=ref,event=branch
 
       - name: Build and push frontend
         uses: docker/build-push-action@v6
@@ -165,8 +161,6 @@ jobs:
           images: ${{ secrets.ACR_LOGIN_SERVER }}/backend
           tags: |
             type=raw,value=${{ github.run_id }}
-            type=sha
-            type=ref,event=branch
 
       - name: Build and push backend
         uses: docker/build-push-action@v6
@@ -204,8 +198,6 @@ jobs:
           images: ${{ secrets.ACR_LOGIN_SERVER }}/livekit-agent
           tags: |
             type=raw,value=${{ github.run_id }}
-            type=sha
-            type=ref,event=branch
 
       - name: Build and push livekit-agent
         uses: docker/build-push-action@v6

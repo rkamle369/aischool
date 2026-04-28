@@ -32,6 +32,10 @@ app.use(
 );
 app.use(express.json());
 
+app.get("/", (_req, res) => {
+  res.json({ ok: true, message: "API is working" });
+});
+
 app.get("/health", (_req, res) => {
   res.json({ ok: true });
 });

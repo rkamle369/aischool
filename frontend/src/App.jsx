@@ -6,13 +6,19 @@ import SessionSummaryPage from "./components/SessionSummaryPage";
 import Sidebar from "./components/Sidebar";
 import TutorProfilePage from "./components/TutorProfilePage";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
-const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "";
-const LIVEKIT_SELF_HOSTED = import.meta.env.VITE_LIVEKIT_SELF_HOSTED === "true";
-const LIVEKIT_AGENT_MODE = import.meta.env.VITE_LIVEKIT_AGENT_MODE === "true";
-const BROWSER_TTS_FALLBACK_ENABLED = import.meta.env.VITE_DISABLE_BROWSER_TTS_FALLBACK !== "true";
-const AUTO_SEND_SILENCE_MS = Number(import.meta.env.VITE_AUTO_SEND_SILENCE_MS || 1800);
-const TTS_PLAYBACK_RATE = Number(import.meta.env.VITE_TTS_PLAYBACK_RATE || 1.05);
+const runtimeConfig = window.__APP_CONFIG__ || {};
+const API_BASE_URL = runtimeConfig.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+const LIVEKIT_URL = runtimeConfig.VITE_LIVEKIT_URL || import.meta.env.VITE_LIVEKIT_URL || "";
+const LIVEKIT_SELF_HOSTED =
+  (runtimeConfig.VITE_LIVEKIT_SELF_HOSTED || import.meta.env.VITE_LIVEKIT_SELF_HOSTED) === "true";
+const LIVEKIT_AGENT_MODE =
+  (runtimeConfig.VITE_LIVEKIT_AGENT_MODE || import.meta.env.VITE_LIVEKIT_AGENT_MODE) === "true";
+const BROWSER_TTS_FALLBACK_ENABLED =
+  (runtimeConfig.VITE_DISABLE_BROWSER_TTS_FALLBACK || import.meta.env.VITE_DISABLE_BROWSER_TTS_FALLBACK) !== "true";
+const AUTO_SEND_SILENCE_MS = Number(
+  runtimeConfig.VITE_AUTO_SEND_SILENCE_MS || import.meta.env.VITE_AUTO_SEND_SILENCE_MS || 1800
+);
+const TTS_PLAYBACK_RATE = Number(runtimeConfig.VITE_TTS_PLAYBACK_RATE || import.meta.env.VITE_TTS_PLAYBACK_RATE || 1.05);
 
 const normalizeLiveKitUrl = (rawUrl) => {
   const value = (rawUrl || "").trim().replace(/\/+$/, "");

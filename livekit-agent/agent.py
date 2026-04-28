@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 from livekit.agents import Agent, AgentSession, JobContext, WorkerOptions, cli
 from livekit.plugins import openai, silero
 
-load_dotenv()
+# Keep runtime-provided env (Kubernetes ConfigMap/Secret) as source of truth.
+load_dotenv(override=False)
 
 # Ensure Python uses a reliable CA bundle for TLS (helps on macOS venv setups).
 os.environ["SSL_CERT_FILE"] = certifi.where()

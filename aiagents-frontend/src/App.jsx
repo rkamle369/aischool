@@ -3,10 +3,11 @@ import { Room, RoomEvent } from "livekit-client";
 import mentorImage from "./assets/mentor.png";
 import { AGENTS, getAgentById } from "./agents";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
-const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "";
-const LIVEKIT_AGENT_MODE = import.meta.env.VITE_LIVEKIT_AGENT_MODE !== "false";
-const TUTOR_CALL_SECONDS = Number(import.meta.env.VITE_TUTOR_CALL_SECONDS || 300);
+const runtimeConfig = window.__APP_CONFIG__ || {};
+const API_BASE_URL = runtimeConfig.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+const LIVEKIT_URL = runtimeConfig.VITE_LIVEKIT_URL || import.meta.env.VITE_LIVEKIT_URL || "";
+const LIVEKIT_AGENT_MODE = (runtimeConfig.VITE_LIVEKIT_AGENT_MODE || import.meta.env.VITE_LIVEKIT_AGENT_MODE) !== "false";
+const TUTOR_CALL_SECONDS = Number(runtimeConfig.VITE_TUTOR_CALL_SECONDS || import.meta.env.VITE_TUTOR_CALL_SECONDS || 300);
 
 function normalizeLiveKitUrl(rawUrl) {
   const value = (rawUrl || "").trim().replace(/\/+$/, "");

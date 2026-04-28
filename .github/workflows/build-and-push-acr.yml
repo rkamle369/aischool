@@ -63,8 +63,8 @@ jobs:
   build-aiagents-frontend:
     needs: detect-changes
     if: |
-      needs.detect-changes.outputs.aiagents_frontend == 'true' ||
-      (github.event_name == 'workflow_dispatch' && inputs.build_aiagents_frontend == true)
+      (github.event_name == 'push' && needs.detect-changes.outputs.aiagents_frontend == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.build_aiagents_frontend == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -102,8 +102,8 @@ jobs:
   build-frontend:
     needs: detect-changes
     if: |
-      needs.detect-changes.outputs.frontend == 'true' ||
-      (github.event_name == 'workflow_dispatch' && inputs.build_frontend == true)
+      (github.event_name == 'push' && needs.detect-changes.outputs.frontend == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.build_frontend == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -141,8 +141,8 @@ jobs:
   build-backend:
     needs: detect-changes
     if: |
-      needs.detect-changes.outputs.backend == 'true' ||
-      (github.event_name == 'workflow_dispatch' && inputs.build_backend == true)
+      (github.event_name == 'push' && needs.detect-changes.outputs.backend == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.build_backend == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -180,8 +180,8 @@ jobs:
   build-livekit-agent:
     needs: detect-changes
     if: |
-      needs.detect-changes.outputs.livekit_agent == 'true' ||
-      (github.event_name == 'workflow_dispatch' && inputs.build_livekit_agent == true)
+      (github.event_name == 'push' && needs.detect-changes.outputs.livekit_agent == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.build_livekit_agent == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

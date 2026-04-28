@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #e2e8f0;
+}
+
+.ai-orb {
+  position: relative;
+  height: 170px;
+  width: 170px;
+  border-radius: 9999px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(56, 189, 248, 0.95), rgba(37, 99, 235, 0.88) 36%, rgba(88, 28, 135, 0.9) 66%, rgba(2, 6, 23, 0.95) 100%);
+  box-shadow:
+    inset 0 0 40px rgba(191, 219, 254, 0.28),
+    0 0 0 10px rgba(30, 41, 59, 0.48),
+    0 0 85px rgba(14, 165, 233, 0.38);
+  overflow: hidden;
+}
+
+.ai-orb::before {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.ai-orb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(59, 130, 246, 0.0),
+    rgba(34, 211, 238, 0.35),
+    rgba(139, 92, 246, 0.3),
+    rgba(59, 130, 246, 0.0)
+  );
+  animation: orb-sheen 3.2s linear infinite;
+}
+
+.ai-orb-core {
+  height: 30%;
+  width: 30%;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1), rgba(191, 219, 254, 0.86));
+  box-shadow: 0 0 22px rgba(255, 255, 255, 0.55);
+  z-index: 2;
+}
+
+.ai-orb-ring {
+  position: absolute;
+  inset: -22px;
+  border-radius: 9999px;
+  border: 2px solid rgba(125, 211, 252, 0.35);
+  z-index: 1;
+}
+
+.ai-wave-wrap {
+  position: absolute;
+  bottom: 22px;
+  display: flex;
+  gap: 5px;
+  align-items: flex-end;
+  z-index: 3;
+}
+
+.ai-wave-bar {
+  width: 5px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(224, 242, 254, 0.88);
+  box-shadow: 0 0 10px rgba(125, 211, 252, 0.55);
+}
+
+.ai-orb-idle {
+  animation: orb-float 2.6s ease-in-out infinite;
+}
+
+.ai-orb-listening {
+  animation: orb-listening 1.1s ease-in-out infinite;
+}
+
+.ai-orb-thinking {
+  animation: orb-thinking 0.9s linear infinite;
+}
+
+.ai-orb-speaking {
+  animation: orb-speaking 0.55s ease-in-out infinite;
+}
+
+.ai-orb-ring-listening {
+  animation: ring-listening 1s ease-in-out infinite;
+}
+
+.ai-orb-ring-thinking {
+  animation: ring-thinking 1.2s linear infinite;
+}
+
+.ai-orb-ring-speaking {
+  animation: ring-speaking 0.6s ease-in-out infinite;
+}
+
+.ai-wave-bar-idle,
+.ai-wave-bar-thinking {
+  animation: wave-idle 1.4s ease-in-out infinite;
+}
+
+.ai-wave-bar-listening {
+  animation: wave-listening 0.8s ease-in-out infinite;
+}
+
+.ai-wave-bar-speaking {
+  animation: wave-speaking 0.45s ease-in-out infinite;
+}
+
+@keyframes orb-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1.03); }
+}
+
+@keyframes orb-listening {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 8px rgba(30, 41, 59, 0.6), 0 0 36px rgba(34, 211, 238, 0.25); }
+  50% { transform: scale(1.07); box-shadow: 0 0 0 10px rgba(6, 182, 212, 0.35), 0 0 52px rgba(34, 211, 238, 0.42); }
+}
+
+@keyframes orb-thinking {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orb-speaking {
+  0%, 100% { transform: scale(1.01); box-shadow: 0 0 0 8px rgba(30, 41, 59, 0.6), 0 0 35px rgba(59, 130, 246, 0.3); }
+  50% { transform: scale(1.12); box-shadow: 0 0 0 13px rgba(34, 211, 238, 0.45), 0 0 75px rgba(59, 130, 246, 0.65); }
+}
+
+@keyframes ring-listening {
+  0%, 100% { transform: scale(0.98); opacity: 0.5; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes ring-thinking {
+  from { transform: rotate(0deg) scale(1); }
+  to { transform: rotate(360deg) scale(1.02); }
+}
+
+@keyframes ring-speaking {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes wave-idle {
+  0%, 100% { height: 8px; opacity: 0.55; }
+  50% { height: 12px; opacity: 0.8; }
+}
+
+@keyframes wave-listening {
+  0%, 100% { height: 10px; opacity: 0.8; }
+  50% { height: 18px; opacity: 1; }
+}
+
+@keyframes wave-speaking {
+  0%, 100% { height: 11px; opacity: 0.75; }
+  50% { height: 30px; opacity: 1; }
+}
+
+@keyframes orb-sheen {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

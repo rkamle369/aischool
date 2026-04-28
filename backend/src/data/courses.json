@@ -1,0 +1,257 @@
+{
+  "courses": [
+    {
+      "id": "software-engineering-101",
+      "title": "Software Engineering 101",
+      "subjects": [
+        {
+          "id": "fundamentals",
+          "title": "Fundamentals",
+          "chapters": [
+            {
+              "id": "what-is-se",
+              "title": "What is Software Engineering?",
+              "content": "Software engineering is the discipline of designing, building, testing, and maintaining software systems in a reliable and scalable way. It combines coding with planning, teamwork, testing, version control, and continuous improvement."
+            },
+            {
+              "id": "version-control",
+              "title": "Version Control with Git",
+              "content": "Version control helps teams track code changes over time. Git allows you to create commits, branches, and merges. This makes collaboration safer and easier because everyone can work in parallel while preserving project history."
+            }
+          ]
+        },
+        {
+          "id": "architecture",
+          "title": "System Design Basics",
+          "chapters": [
+            {
+              "id": "client-server",
+              "title": "Client-Server Architecture",
+              "content": "Client-server architecture splits responsibilities between clients (frontend apps) and servers (backend services). The client handles user interface and interactions, while the server manages business logic, data, and security."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-for-beginners",
+      "title": "AI for Beginners",
+      "subjects": [
+        {
+          "id": "ai-basics",
+          "title": "AI Foundations",
+          "chapters": [
+            {
+              "id": "intro-to-ai",
+              "title": "Introduction to AI",
+              "content": "Artificial Intelligence is the field of building systems that can perform tasks requiring human-like intelligence, such as understanding language, recognizing patterns, and making predictions."
+            },
+            {
+              "id": "machine-learning",
+              "title": "What is Machine Learning?",
+              "content": "Machine learning is a subset of AI where models learn patterns from data instead of being programmed with fixed rules. With enough data and training, models can predict or classify new inputs."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "devops",
+      "title": "DevOps",
+      "subjects": [
+        {
+          "id": "devops-core",
+          "title": "DevOps Core",
+          "chapters": [
+            {
+              "id": "devops-intro",
+              "title": "What is DevOps?",
+              "content": "DevOps is a culture and practice that brings development and operations together to deliver software faster and more reliably using automation, collaboration, and continuous feedback."
+            },
+            {
+              "id": "ci-cd-basics",
+              "title": "CI/CD Basics",
+              "content": "CI/CD automates integration, testing, and delivery. Continuous Integration catches issues early, while Continuous Delivery helps teams release updates quickly and safely."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-engineering",
+      "title": "AI Engineering",
+      "subjects": [
+        {
+          "id": "ai-engineering-foundations",
+          "title": "AI App Foundations",
+          "chapters": [
+            {
+              "id": "llm-app-building",
+              "title": "Building with LLMs",
+              "content": "AI engineering focuses on integrating language models into practical products through prompt design, retrieval, evaluation, and system orchestration."
+            },
+            {
+              "id": "ai-evaluation",
+              "title": "Evaluation and Safety",
+              "content": "Reliable AI products require quality checks for accuracy, consistency, and safety using test sets, guardrails, and continuous monitoring."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cloud-computing",
+      "title": "Cloud Computing",
+      "subjects": [
+        {
+          "id": "cloud-basics",
+          "title": "Cloud Basics",
+          "chapters": [
+            {
+              "id": "service-models",
+              "title": "IaaS, PaaS, SaaS",
+              "content": "Cloud service models define responsibility boundaries. IaaS provides infrastructure, PaaS provides managed runtime platforms, and SaaS delivers complete applications."
+            },
+            {
+              "id": "cloud-scalability",
+              "title": "Scalability and Reliability",
+              "content": "Cloud systems scale with demand using load balancing and autoscaling, while reliability is improved through redundancy, backups, and fault tolerance."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "full-stack-development",
+      "title": "Full Stack Development",
+      "subjects": [
+        {
+          "id": "full-stack-core",
+          "title": "Frontend + Backend",
+          "chapters": [
+            {
+              "id": "full-stack-intro",
+              "title": "End-to-End Web Architecture",
+              "content": "Full stack development connects user interfaces, backend APIs, databases, and deployment workflows to deliver complete web applications."
+            },
+            {
+              "id": "state-api-data",
+              "title": "State, APIs, and Data Flow",
+              "content": "Modern full stack apps use predictable state management and clear API boundaries so data flows reliably between frontend and backend."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-analytics",
+      "title": "Data Analytics",
+      "subjects": [
+        {
+          "id": "analytics-foundations",
+          "title": "Analytics Foundations",
+          "chapters": [
+            {
+              "id": "analytics-types",
+              "title": "Descriptive and Diagnostic Analytics",
+              "content": "Descriptive analytics explains what happened, and diagnostic analytics explores why it happened by drilling into trends and relationships in data."
+            },
+            {
+              "id": "kpi-dashboard",
+              "title": "KPIs and Dashboards",
+              "content": "Strong dashboards track actionable KPIs and present visual summaries that support faster and better decision-making."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prompt-engineering",
+      "title": "Prompt Engineering",
+      "subjects": [
+        {
+          "id": "prompt-foundations",
+          "title": "Prompt Foundations",
+          "chapters": [
+            {
+              "id": "prompt-structure",
+              "title": "Prompt Structure",
+              "content": "Good prompts include role, context, constraints, and output format to reduce ambiguity and improve model response quality."
+            },
+            {
+              "id": "few-shot-techniques",
+              "title": "Few-Shot and Iterative Prompting",
+              "content": "Few-shot prompting uses examples to shape output behavior, and iterative refinement helps improve clarity, tone, and correctness."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "solution-design",
+      "title": "Solution Design",
+      "subjects": [
+        {
+          "id": "design-principles",
+          "title": "Design Principles",
+          "chapters": [
+            {
+              "id": "requirements-to-architecture",
+              "title": "From Requirements to Architecture",
+              "content": "Solution design translates business needs into technical architecture, balancing scalability, cost, maintainability, and delivery speed."
+            },
+            {
+              "id": "tradeoff-analysis",
+              "title": "Trade-Off Analysis",
+              "content": "Architects evaluate trade-offs like performance versus cost or speed versus reliability to choose practical implementation approaches."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "project-management",
+      "title": "Project Management",
+      "subjects": [
+        {
+          "id": "pm-basics",
+          "title": "Project Management Basics",
+          "chapters": [
+            {
+              "id": "planning-and-scope",
+              "title": "Planning and Scope",
+              "content": "Project planning defines goals, scope, timelines, and resources so teams can execute with clear expectations and reduced risk."
+            },
+            {
+              "id": "agile-delivery",
+              "title": "Agile Delivery",
+              "content": "Agile methods deliver value incrementally through short iterations, team collaboration, and regular feedback from stakeholders."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "automation-testing",
+      "title": "Automation Testing",
+      "subjects": [
+        {
+          "id": "testing-core",
+          "title": "Testing Core",
+          "chapters": [
+            {
+              "id": "test-pyramid",
+              "title": "Test Pyramid",
+              "content": "The test pyramid recommends more unit tests, fewer integration tests, and selective end-to-end tests for fast and reliable quality feedback."
+            },
+            {
+              "id": "ui-api-automation",
+              "title": "UI and API Automation",
+              "content": "Automation frameworks validate application behavior by testing API contracts and critical user flows, improving release confidence."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed-variant": "#004e5a",
+            "outline": "#958da1",
+            "on-surface": "#e8dfee",
+            "inverse-on-surface": "#332f39",
+            "tertiary-fixed": "#e2e2e3",
+            "on-tertiary": "#2f3132",
+            "surface-container-high": "#2c2833",
+            "primary": "#d2bbff",
+            "surface-variant": "#37333e",
+            "surface-container-lowest": "#100d16",
+            "on-primary-fixed": "#25005a",
+            "tertiary-fixed-dim": "#c6c6c7",
+            "error-container": "#93000a",
+            "tertiary": "#c6c6c7",
+            "secondary-container": "#00cbe6",
+            "inverse-surface": "#e8dfee",
+            "surface-dim": "#15121b",
+            "on-primary": "#3f008e",
+            "inverse-primary": "#732ee4",
+            "error": "#ffb4ab",
+            "background": "#15121b",
+            "on-error": "#690005",
+            "tertiary-container": "#656768",
+            "on-background": "#e8dfee",
+            "on-primary-fixed-variant": "#5a00c6",
+            "on-secondary-container": "#00515d",
+            "on-tertiary-fixed-variant": "#454748",
+            "on-secondary": "#00363e",
+            "surface": "#15121b",
+            "surface-bright": "#3c3742",
+            "surface-container-highest": "#37333e",
+            "secondary-fixed-dim": "#2fd9f4",
+            "secondary": "#5de6ff",
+            "primary-fixed-dim": "#d2bbff",
+            "on-surface-variant": "#ccc3d8",
+            "on-tertiary-fixed": "#1a1c1d",
+            "surface-container": "#221e28",
+            "on-primary-container": "#ede0ff",
+            "surface-tint": "#d2bbff",
+            "on-tertiary-container": "#e6e6e7",
+            "on-error-container": "#ffdad6",
+            "primary-fixed": "#eaddff",
+            "on-secondary-fixed": "#001f25",
+            "surface-container-low": "#1d1a24",
+            "primary-container": "#7c3aed",
+            "secondary-fixed": "#a2eeff",
+            "outline-variant": "#4a4455"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-md": "16px",
+            "unit": "8px",
+            "stack-sm": "8px",
+            "stack-lg": "32px",
+            "container-margin": "24px",
+            "gutter": "16px"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "display-xl": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-sm": ["Inter"]
+          },
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+            "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "display-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "label-sm": ["13px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-morphism {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .rim-light {
+      box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .voice-wave {
+      mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden h-screen">
+<!-- Background Luminous Orbs -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-container/20 blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary-container/10 blur-[150px]"></div>
+</div>
+<!-- Top Navigation (Shell suppressed for transaction focus, using simple brand header) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-violet-950/20 backdrop-blur-xl border-b border-white/10 glassmorphism-rim-light shadow-[0_0_40px_-15px_rgba(124,58,237,0.15)]">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white text-sm" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-cyan-300 font-inter tracking-tight">Lumina Mentor</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full text-white/70 hover:text-white transition-colors hover:bg-white/5">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="p-2 rounded-full text-white/70 hover:text-white transition-colors hover:bg-white/5">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<main class="relative h-full w-full flex flex-col items-center justify-center pt-16">
+<!-- Transcription Bubbles (Left) -->
+<div class="absolute left-container-margin top-1/2 -translate-y-1/2 w-80 space-y-stack-lg hidden xl:block">
+<div class="glass-morphism p-stack-md rounded-xl rim-light opacity-60">
+<p class="font-label-sm text-secondary uppercase mb-2">Student</p>
+<p class="font-body-md text-on-surface">Can you explain how the Doppler effect applies to light waves in space?</p>
+</div>
+<div class="glass-morphism p-stack-md rounded-xl rim-light shadow-2xl scale-105 border-primary/30">
+<p class="font-label-sm text-primary uppercase mb-2">Lumina</p>
+<p class="font-body-md text-on-surface">Exactly like sound, light waves compress as an object moves toward you, causing a 'blue shift', and stretch as it moves away, creating a 'red shift'.</p>
+</div>
+</div>
+<!-- Transcription Bubbles (Right) -->
+<div class="absolute right-container-margin top-1/2 -translate-y-1/2 w-80 space-y-stack-lg hidden xl:block">
+<div class="glass-morphism p-stack-md rounded-xl rim-light opacity-80 border-secondary/20">
+<p class="font-label-sm text-secondary uppercase mb-2">Student</p>
+<p class="font-body-md text-on-surface">So that's how we know the universe is expanding?</p>
+</div>
+</div>
+<!-- Central Focus: AI Avatar -->
+<div class="relative group cursor-pointer flex flex-col items-center max-w-2xl w-full">
+<div class="relative w-80 h-80 md:w-[480px] md:h-[480px] rounded-full overflow-hidden border-4 border-white/5 shadow-[0_0_80px_rgba(124,58,237,0.3)]">
+<img alt="Dr. Anya Sharma - Female AI Tutor" class="w-full h-full object-cover grayscale-[20%] brightness-110 hover:scale-105 transition-transform duration-700" data-alt="Dr. Anya Sharma, a warm and encouraging female AI tutor in a professional setting." src="https://lh3.googleusercontent.com/aida/ADBb0ujjbMkb-NOeK02w77IpP9C57rwcIExCDgEP6awVh0LzQif5RGStIQX525sXR8pNyAbyPgxYgO5Bws7Oud8EOcXYN6yi-jpf7xl_mKE_DBT8FxsVoULfIvqc0MslORvXWDqC5v5nYnaDL_sbi06iH8ryHI6hNAuQgTyZoF12CKIOAAxIeN68jzssbbVn-5hMErND-Ax5INpbTTU2K-fLqx_ol484UTVaT1KbKlsIQZkX393ovfPSLFs-SQ"/>
+<!-- Overlay Glow -->
+<div class="absolute inset-0 bg-gradient-to-t from-violet-950/60 via-transparent to-transparent"></div>
+</div>
+<!-- AI Voice Visualizer (Central) -->
+<div class="mt-stack-lg w-full flex flex-col items-center gap-stack-md">
+<div class="voice-wave w-full h-24 flex items-center justify-center gap-1">
+<!-- Fluid Neon Wave Representation -->
+<div class="w-1 h-8 bg-secondary rounded-full animate-pulse shadow-[0_0_15px_rgba(93,230,255,0.8)]" style="height: 40px;"></div>
+<div class="w-1 h-12 bg-secondary rounded-full animate-pulse delay-75 shadow-[0_0_15px_rgba(93,230,255,0.8)]" style="height: 60px;"></div>
+<div class="w-1 h-16 bg-primary rounded-full animate-pulse delay-150 shadow-[0_0_15px_rgba(210,187,255,0.8)]" style="height: 80px;"></div>
+<div class="w-1 h-20 bg-secondary rounded-full animate-pulse delay-100 shadow-[0_0_15px_rgba(93,230,255,0.8)]" style="height: 90px;"></div>
+<div class="w-1 h-16 bg-primary rounded-full animate-pulse delay-300 shadow-[0_0_15px_rgba(210,187,255,0.8)]" style="height: 70px;"></div>
+<div class="w-1 h-12 bg-secondary rounded-full animate-pulse delay-200 shadow-[0_0_15px_rgba(93,230,255,0.8)]" style="height: 50px;"></div>
+<div class="w-1 h-8 bg-secondary rounded-full animate-pulse delay-500 shadow-[0_0_15px_rgba(93,230,255,0.8)]" style="height: 35px;"></div>
+</div>
+<p class="font-display-xl text-white font-bold tracking-tight text-center animate-pulse">Lumina is listening...</p>
+</div>
+</div>
+<!-- Essential Voice Controls -->
+<div class="fixed bottom-12 flex items-center gap-8 px-8 py-4 rounded-full glass-morphism rim-light shadow-2xl">
+<button class="group flex flex-col items-center gap-1 transition-all active:scale-95">
+<div class="w-12 h-12 rounded-full flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="volume_up">volume_up</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Mute Output</span>
+</button>
+<!-- Primary Interaction (Mic) -->
+<button class="relative group w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-tr from-primary-container to-secondary-container shadow-[0_0_30px_rgba(124,58,237,0.5)] transition-all active:scale-90 hover:shadow-[0_0_50px_rgba(124,58,237,0.7)]">
+<div class="absolute inset-0 rounded-full border-2 border-white/20 scale-110 group-hover:scale-125 transition-transform duration-500"></div>
+<span class="material-symbols-outlined text-4xl text-white" data-icon="mic" data-weight="fill">mic</span>
+</button>
+<button class="group flex flex-col items-center gap-1 transition-all active:scale-95">
+<div class="w-12 h-12 rounded-full flex items-center justify-center bg-error-container/20 text-error hover:bg-error-container hover:text-on-error-container transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="call_end">call_end</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest text-error font-bold">End Session</span>
+</button>
+</div>
+<!-- Progress Indicator (Corner) -->
+<div class="absolute bottom-8 right-8 flex flex-col items-end gap-2">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-on-surface-variant uppercase">Module Mastery</span>
+<span class="font-label-sm text-secondary font-bold">84%</span>
+</div>
+<div class="w-48 h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full w-[84%] bg-gradient-to-r from-primary to-secondary relative">
+<div class="absolute inset-0 bg-white/30 animate-shimmer"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Side Navigation Hidden for Session Focus (as per instructions) -->
+</body></html>

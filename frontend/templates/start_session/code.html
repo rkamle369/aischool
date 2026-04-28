@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AetherTutor | Start Session</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-orb {
+            filter: blur(80px);
+            opacity: 0.4;
+        }
+        .voice-blob {
+            animation: pulse-slow 8s infinite alternate ease-in-out;
+        }
+        @keyframes pulse-slow {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.1) translate(2%, 1%); }
+            100% { transform: scale(0.9) translate(-1%, -2%); }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#7c3aed",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#25005a",
+                        "on-primary-container": "#ede0ff",
+                        "on-surface": "#e8dfee",
+                        "primary-fixed": "#eaddff",
+                        "inverse-surface": "#e8dfee",
+                        "on-surface-variant": "#ccc3d8",
+                        "secondary-fixed-dim": "#2fd9f4",
+                        "inverse-on-surface": "#332f39",
+                        "on-tertiary-fixed-variant": "#454748",
+                        "on-background": "#e8dfee",
+                        "on-secondary-fixed-variant": "#004e5a",
+                        "tertiary-container": "#656768",
+                        "tertiary": "#c6c6c7",
+                        "outline-variant": "#4a4455",
+                        "surface-tint": "#d2bbff",
+                        "surface": "#15121b",
+                        "on-tertiary-container": "#e6e6e7",
+                        "on-tertiary-fixed": "#1a1c1d",
+                        "on-primary": "#3f008e",
+                        "surface-container-highest": "#37333e",
+                        "tertiary-fixed": "#e2e2e3",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "primary": "#d2bbff",
+                        "on-error": "#690005",
+                        "inverse-primary": "#732ee4",
+                        "surface-container-low": "#1d1a24",
+                        "surface-container": "#221e28",
+                        "surface-bright": "#3c3742",
+                        "on-secondary-container": "#00515d",
+                        "primary-fixed-dim": "#d2bbff",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "surface-dim": "#15121b",
+                        "surface-variant": "#37333e",
+                        "outline": "#958da1",
+                        "on-secondary": "#00363e",
+                        "secondary-fixed": "#a2eeff",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "secondary-container": "#00cbe6",
+                        "on-secondary-fixed": "#001f25",
+                        "background": "#15121b",
+                        "on-tertiary": "#2f3132",
+                        "surface-container-lowest": "#100d16",
+                        "surface-container-high": "#2c2833",
+                        "secondary": "#5de6ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "gutter": "16px",
+                        "unit": "8px",
+                        "stack-md": "16px",
+                        "container-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "display-xl": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["13px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden min-h-screen relative">
+<!-- Luminous Orbs -->
+<div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary-container glow-orb rounded-full"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-secondary glow-orb rounded-full"></div>
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-8 py-4 w-full bg-slate-950/50 backdrop-blur-2xl font-inter antialiased tracking-tight border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+<div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-cyan-400">
+            AetherTutor
+        </div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="text-slate-400 hover:text-white transition-colors hover:bg-white/5 rounded-lg active:scale-95 duration-200" href="#">Explore</a>
+<a class="text-slate-400 hover:text-white transition-colors hover:bg-white/5 rounded-lg active:scale-95 duration-200" href="#">My Tutors</a>
+<a class="text-cyan-400 border-b-2 border-cyan-400 pb-1 hover:bg-white/5 rounded-lg active:scale-95 duration-200" href="#">Sessions</a>
+</nav>
+<div class="flex items-center space-x-4">
+<button class="p-2 text-slate-400 hover:text-white transition-all duration-300 rounded-lg active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-white transition-all duration-300 rounded-lg active:scale-95">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="relative z-10 flex flex-col items-center justify-center h-[calc(100vh-80px)] px-container-margin max-w-4xl mx-auto text-center space-y-stack-lg">
+<!-- Header Text -->
+<div class="space-y-stack-sm">
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-[0.2em]">Ready for Insight</p>
+<h1 class="font-display-xl text-display-xl text-on-surface">Quantum Mechanics</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto">
+                Prepare to explore the fundamental principles of the subatomic world with your empathetic mentor.
+            </p>
+</div>
+<!-- Central AI Voice Visualizer / Orb Button -->
+<div class="relative flex items-center justify-center py-stack-lg">
+<!-- Animated Background Glow -->
+<div class="absolute w-80 h-80 bg-secondary/20 rounded-full blur-3xl voice-blob"></div>
+<button class="group relative z-20 flex flex-col items-center justify-center w-64 h-64 rounded-full glass-card hover:border-secondary/40 transition-all duration-500 shadow-[0_0_50px_rgba(93,230,255,0.1)] active:scale-95 group">
+<!-- Inner morphing core -->
+<div class="absolute inset-4 rounded-full bg-gradient-to-br from-primary-container to-secondary opacity-20 group-hover:opacity-40 transition-opacity duration-500 blur-xl"></div>
+<div class="flex flex-col items-center space-y-stack-sm">
+<span class="material-symbols-outlined text-5xl text-secondary group-hover:scale-110 transition-transform duration-500" data-icon="record_voice_over">record_voice_over</span>
+<span class="font-headline-md text-headline-md text-white px-8">Begin Learning Session</span>
+</div>
+</button>
+<!-- Shimmer Ring -->
+<div class="absolute w-[17rem] h-[17rem] border border-secondary/20 rounded-full animate-[ping_3s_linear_infinite]"></div>
+<div class="absolute w-[18rem] h-[18rem] border border-primary/10 rounded-full animate-[ping_4s_linear_infinite_1s]"></div>
+</div>
+<!-- Pre-flight checklist -->
+<div class="flex flex-col items-center space-y-stack-md pt-stack-lg">
+<div class="flex items-center space-x-gutter glass-card px-stack-md py-stack-sm rounded-full">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="mic">mic</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Check your microphone</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+</div>
+<div class="flex space-x-stack-md">
+<button class="flex items-center space-x-unit font-label-sm text-label-sm text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+<span>Session Settings</span>
+</button>
+<div class="w-px h-4 bg-outline-variant"></div>
+<button class="flex items-center space-x-unit font-label-sm text-label-sm text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="help_outline">help_outline</span>
+<span>Tutorial</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Backdrop Texture -->
+<div class="fixed bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-surface to-transparent pointer-events-none z-0"></div>
+<!-- Decorative Image Card (Asymmetric Layout) -->
+<div class="fixed right-[5%] bottom-[10%] w-64 h-80 glass-card rounded-xl p-4 hidden lg:block transform rotate-3 hover:rotate-0 transition-transform duration-700">
+<div class="w-full h-full rounded-lg overflow-hidden relative grayscale opacity-40 group-hover:opacity-100 transition-opacity">
+<img alt="Quantum visualization" class="w-full h-full object-cover" data-alt="Abstract 3D render of a quantum wave function with vibrant blue and purple particles swirling in a dark void" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhmo37O9Ie_KlhmyjQaUk4yZDfuGz6SKwAl0JkZMyaid1khE3WYb5Sr21QkgcfVU_B7tvh_mliE0QwkCT-_wgfxGX5jMyRdDzEbpmvEofkWNWNx0Fa7CVlgn4hTtAOY58udEmbvvffpojFg-JuSak3zloJVt8ZpMh62avUls80fTZhf8-LgHCD96oVdTDtY9Vw8BAv35oes-O4uadkcJkx-lUtfdZ0XCk4YL-a50-2wLkLOMXuPU5ZNRUvfd_hInnCKxbmvJkTAg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="font-label-sm text-label-sm text-secondary">Aether Guide</p>
+<p class="font-body-md text-body-md text-white">Quantum state ready for observation.</p>
+</div>
+</div>
+</div>
+</body></html>

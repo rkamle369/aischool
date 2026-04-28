@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:4000}
+        VITE_LIVEKIT_URL: ${VITE_LIVEKIT_URL:-ws://localhost:7880}
+        VITE_LIVEKIT_SELF_HOSTED: ${VITE_LIVEKIT_SELF_HOSTED:-true}
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  livekit-agent:
+    build:
+      context: ./livekit-agent
+      dockerfile: Dockerfile
+    env_file:
+      - ./livekit-agent/.env
+    restart: unless-stopped
+

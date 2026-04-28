@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed-variant": "#004e5a",
+            "outline": "#958da1",
+            "on-surface": "#e8dfee",
+            "inverse-on-surface": "#332f39",
+            "tertiary-fixed": "#e2e2e3",
+            "on-tertiary": "#2f3132",
+            "surface-container-high": "#2c2833",
+            "primary": "#d2bbff",
+            "surface-variant": "#37333e",
+            "surface-container-lowest": "#100d16",
+            "on-primary-fixed": "#25005a",
+            "tertiary-fixed-dim": "#c6c6c7",
+            "error-container": "#93000a",
+            "tertiary": "#c6c6c7",
+            "secondary-container": "#00cbe6",
+            "inverse-surface": "#e8dfee",
+            "surface-dim": "#15121b",
+            "on-primary": "#3f008e",
+            "inverse-primary": "#732ee4",
+            "error": "#ffb4ab",
+            "background": "#15121b",
+            "on-error": "#690005",
+            "tertiary-container": "#656768",
+            "on-background": "#e8dfee",
+            "on-primary-fixed-variant": "#5a00c6",
+            "on-secondary-container": "#00515d",
+            "on-tertiary-fixed-variant": "#454748",
+            "on-secondary": "#00363e",
+            "surface": "#15121b",
+            "surface-bright": "#3c3742",
+            "surface-container-highest": "#37333e",
+            "secondary-fixed-dim": "#2fd9f4",
+            "secondary": "#5de6ff",
+            "primary-fixed-dim": "#d2bbff",
+            "on-surface-variant": "#ccc3d8",
+            "on-tertiary-fixed": "#1a1c1d",
+            "surface-container": "#221e28",
+            "on-primary-container": "#ede0ff",
+            "surface-tint": "#d2bbff",
+            "on-tertiary-container": "#e6e6e7",
+            "on-error-container": "#ffdad6",
+            "primary-fixed": "#eaddff",
+            "on-secondary-fixed": "#001f25",
+            "surface-container-low": "#1d1a24",
+            "primary-container": "#7c3aed",
+            "secondary-fixed": "#a2eeff",
+            "outline-variant": "#4a4455"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-md": "16px",
+            "unit": "8px",
+            "stack-sm": "8px",
+            "stack-lg": "32px",
+            "container-margin": "24px",
+            "gutter": "16px"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "display-xl": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-sm": ["Inter"]
+          },
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+            "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "display-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "label-sm": ["13px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .glassmorphism-rim-light {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .orb-glow {
+      filter: blur(100px);
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen selection:bg-primary/30">
+<!-- Luminous Orbs for Background -->
+<div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 orb-glow rounded-full"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-secondary/10 orb-glow rounded-full"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-violet-950/20 backdrop-blur-xl border-b border-white/10 glassmorphism-rim-light shadow-[0_0_40px_-15px_rgba(124,58,237,0.15)]">
+<div class="flex items-center gap-6">
+<span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-cyan-300 font-inter tracking-tight">Lumina Mentor</span>
+<nav class="hidden md:flex gap-8">
+<a class="text-white/70 hover:text-white transition-colors font-body-md" href="#">Courses</a>
+<a class="text-cyan-400 border-b-2 border-cyan-400 pb-1 font-body-md" href="#">History</a>
+<a class="text-white/70 hover:text-white transition-colors font-body-md" href="#">Resources</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-white/5 transition-all duration-300 rounded-full text-violet-400 active:scale-95 duration-150">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="p-2 hover:bg-white/5 transition-all duration-300 rounded-full text-violet-400 active:scale-95 duration-150">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="User profile avatar" class="w-10 h-10 rounded-full border border-white/20" data-alt="portrait of a young man with a friendly expression in high-quality professional lighting for a profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUxXwUieSiqRVlviT-Zb2i3Mux9u1izu1K5XhbI3z1L3NxAzQT2qqOf7ywfXmgWSmULAQJwWlLOpcu5-nmqakwGd4BTANj6aVP3GP_E1jYIU8mtviqXb9R0NpcQOqmrMl08XWwRIvThPACm4lxx010M2ksKb8OGAQ10dULjmNErjLFj-C8_khX5x4Gq5-WzpS_TCWLLd1dwdkFsgiLKIifuTNjSz4g3HVtPtSGkItxmvA_wWzRSsX_2HL0i5PZFa3PEJT_sOoo9Q"/>
+</div>
+</header>
+<main class="pt-32 pb-40 max-w-6xl mx-auto px-container-margin">
+<!-- Hero Header -->
+<div class="mb-stack-lg text-center">
+<span class="text-secondary font-label-sm uppercase tracking-widest mb-4 block">Session Complete</span>
+<h1 class="font-display-xl text-display-xl text-on-surface mb-2">Mastering Quantum Entanglement</h1>
+<p class="text-on-surface-variant font-body-lg">Completed on October 24, 2023 • 42 Minutes Session</p>
+</div>
+<!-- Bento Grid Summary -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-stack-lg">
+<!-- Key Topics Card -->
+<div class="md:col-span-7 bg-white/5 backdrop-blur-2xl rounded-xl p-stack-lg glassmorphism-rim-light">
+<div class="flex items-center gap-3 mb-stack-md">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h2 class="font-headline-md text-headline-md">Key Topics Covered</h2>
+</div>
+<div class="space-y-4">
+<div class="group p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-bold text-primary">Bell's Inequality</h3>
+<span class="text-xs text-white/40">12:04</span>
+</div>
+<p class="text-on-surface-variant text-body-md">Explored the mathematical proofs that distinguish quantum mechanics from classical local hidden variable theories.</p>
+</div>
+<div class="group p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-bold text-primary">EPR Paradox</h3>
+<span class="text-xs text-white/40">24:15</span>
+</div>
+<p class="text-on-surface-variant text-body-md">Discussed the Einstein-Podolsky-Rosen thought experiment and its implications for the locality principle.</p>
+</div>
+<div class="group p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-bold text-primary">Quantum State Superposition</h3>
+<span class="text-xs text-white/40">35:50</span>
+</div>
+<p class="text-on-surface-variant text-body-md">A deep dive into how multiple qubits maintain shared identity across distance until measurement occurs.</p>
+</div>
+</div>
+</div>
+<!-- AI Tutor Insights -->
+<div class="md:col-span-5 flex flex-col gap-gutter">
+<div class="flex-1 bg-gradient-to-br from-primary-container/20 to-transparent backdrop-blur-2xl rounded-xl p-stack-lg glassmorphism-rim-light relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 orb-glow rounded-full"></div>
+<h2 class="font-headline-md text-headline-md mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">psychology</span>
+            Lumina's Insight
+          </h2>
+<p class="text-on-surface text-body-md leading-relaxed mb-4">
+            "Your understanding of non-locality has grown significantly. You identified the core discrepancy in the EPR paper faster than in previous sessions. Next time, let's bridge this to Quantum Key Distribution."
+          </p>
+<div class="h-1 bg-white/10 rounded-full w-full relative">
+<div class="absolute top-0 left-0 h-full w-[78%] bg-primary rounded-full shadow-[0_0_10px_rgba(210,187,255,0.5)]"></div>
+</div>
+<span class="text-xs text-on-surface-variant mt-2 block">78% Progress toward Quantum Master Cert</span>
+</div>
+<div class="p-stack-lg bg-white/5 backdrop-blur-xl rounded-xl glassmorphism-rim-light">
+<h3 class="font-label-sm text-secondary uppercase tracking-widest mb-4">Actions Recommended</h3>
+<ul class="space-y-3">
+<li class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span class="text-sm">Review notes on Qubits</span>
+</li>
+<li class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="text-sm">Take 'Wave-Particle' Quiz</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Transcription Section -->
+<div class="bg-white/5 backdrop-blur-2xl rounded-xl p-stack-lg glassmorphism-rim-light mb-stack-lg h-[400px] flex flex-col">
+<div class="flex justify-between items-center mb-stack-md">
+<h2 class="font-headline-md text-headline-md">Session Transcription</h2>
+<button class="flex items-center gap-2 text-primary font-label-sm hover:underline">
+<span class="material-symbols-outlined text-base">download</span>
+          Export PDF
+        </button>
+</div>
+<div class="flex-1 overflow-y-auto pr-4 space-y-6 scrollbar-thin scrollbar-thumb-white/10">
+<!-- Message -->
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-sm">smart_toy</span>
+</div>
+<div>
+<p class="font-bold text-xs text-primary mb-1">LUMINA AI</p>
+<p class="text-on-surface-variant leading-relaxed">Welcome back. Today we're diving into the heart of quantum mechanics. To start, how would you define entanglement in your own words?</p>
+</div>
+</div>
+<!-- Message -->
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white/40 text-sm">person</span>
+</div>
+<div>
+<p class="font-bold text-xs text-white/40 mb-1">YOU</p>
+<p class="text-on-surface-variant leading-relaxed">Is it when two particles become so linked that one's state depends on the other, regardless of distance?</p>
+</div>
+</div>
+<!-- Message -->
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-sm">smart_toy</span>
+</div>
+<div>
+<p class="font-bold text-xs text-primary mb-1">LUMINA AI</p>
+<p class="text-on-surface-variant leading-relaxed">Precisely. And Einstein famously called this "spooky action at a distance." Let's explore why he was so uncomfortable with that idea...</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Finish Action -->
+<div class="flex justify-center">
+<button class="px-10 py-4 bg-gradient-to-r from-violet-600 to-indigo-700 hover:from-violet-500 hover:to-indigo-600 text-white rounded-full font-headline-md flex items-center gap-3 transition-all duration-300 shadow-[0_10px_30px_-10px_rgba(124,58,237,0.5)] active:scale-95 group">
+        Finish &amp; Return to Courses
+        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- Audio Playback Bar -->
+<div class="fixed bottom-0 left-0 w-full z-50 bg-violet-950/40 backdrop-blur-3xl border-t border-white/10 px-8 py-4 glassmorphism-rim-light">
+<div class="max-w-6xl mx-auto flex items-center gap-8">
+<!-- Session Info -->
+<div class="hidden lg:flex items-center gap-3 w-64">
+<div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">Session_Recording_024.mp3</p>
+<p class="text-xs text-white/40">42:18 • 24.5 MB</p>
+</div>
+</div>
+<!-- Controls -->
+<div class="flex-1 flex flex-col gap-2">
+<div class="flex items-center justify-center gap-6">
+<button class="text-white/60 hover:text-white transition-colors">
+<span class="material-symbols-outlined">replay_10</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-white text-background flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="text-white/60 hover:text-white transition-colors">
+<span class="material-symbols-outlined">forward_30</span>
+</button>
+</div>
+<!-- Progress -->
+<div class="flex items-center gap-4">
+<span class="text-[10px] font-mono text-white/40">18:42</span>
+<div class="flex-1 h-1.5 bg-white/10 rounded-full relative group cursor-pointer">
+<div class="absolute top-0 left-0 h-full w-[45%] bg-gradient-to-r from-primary to-secondary rounded-full relative">
+<div class="absolute -right-1.5 -top-1 w-3.5 h-3.5 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+</div>
+<span class="text-[10px] font-mono text-white/40">42:18</span>
+</div>
+</div>
+<!-- Settings -->
+<div class="hidden md:flex items-center gap-4 w-64 justify-end">
+<div class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-white/60 group-hover:text-white transition-colors">volume_up</span>
+<div class="w-20 h-1 bg-white/20 rounded-full overflow-hidden">
+<div class="h-full w-2/3 bg-white/60"></div>
+</div>
+</div>
+<button class="text-white/60 hover:text-white">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

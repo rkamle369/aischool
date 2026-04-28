@@ -1,0 +1,81 @@
+Hi, my name is Rohit, and today I’m recording my voice so an AI system can learn how I speak.
+
+I’ll be speaking naturally, clearly, and with different tones, so the system can capture my voice patterns, pronunciation, and rhythm.
+
+Let’s begin.
+
+---
+
+Hello! How are you doing today?
+I hope you're having a great day so far.
+
+This is a simple sentence to test clarity and pronunciation.
+Now I will speak a bit faster to see how it sounds when I speed things up.
+And now I’ll slow down… just a little… to add variation.
+
+---
+
+Let me ask a few questions.
+
+What is artificial intelligence?
+How does machine learning actually work?
+Can a computer really understand human language?
+
+These questions help capture how my voice sounds when I’m curious or asking something.
+
+---
+
+Now I’ll read some general sentences.
+
+The quick brown fox jumps over the lazy dog.
+She sells seashells by the seashore.
+Peter Piper picked a peck of pickled peppers.
+
+These sentences include a variety of sounds and help improve pronunciation coverage.
+
+---
+
+Now let’s include numbers and technical words.
+
+I have 2 apples, 10 oranges, and 25 bananas.
+The total cost is 149.75 dollars.
+
+In software engineering, we use tools like APIs, databases, and cloud infrastructure.
+Technologies like Kubernetes, Docker, and Python are commonly used.
+
+Artificial intelligence includes concepts like neural networks, transformers, and large language models.
+
+---
+
+Now I’ll add some expressive tones.
+
+Wow, that’s really interesting!
+I didn’t expect that at all.
+Hmm… let me think about that for a moment.
+That’s actually a very good question.
+
+---
+
+Now I’ll simulate teaching something.
+
+Machine learning is a way for computers to learn from data without being explicitly programmed.
+For example, if you show a model many pictures of cats and dogs, it can learn to tell the difference.
+
+Can you think of another example where this might be useful?
+
+---
+
+Now I’ll include some pauses and natural speech flow.
+
+Sometimes… when we speak… we pause… to think… or emphasize a point.
+
+And sometimes we speak continuously without stopping to maintain flow and engagement.
+
+---
+
+Finally, I’ll end with a natural closing.
+
+Thank you for listening to this voice sample.
+This recording should help the AI system understand how I speak, my tone, and my pronunciation.
+
+Have a great day!

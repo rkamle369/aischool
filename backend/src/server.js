@@ -9,6 +9,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 4000;
+const host = process.env.HOST || "0.0.0.0";
 
 const defaultAllowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
 const allowedOrigins = (process.env.FRONTEND_URL || "")
@@ -39,6 +40,6 @@ app.use("/courses", coursesRoutes);
 app.use("/chat", chatRoutes);
 app.use("/livekit", livekitRoutes);
 
-app.listen(port, () => {
-  console.log(`Backend server running at http://localhost:${port}`);
+app.listen(port, host, () => {
+  console.log(`Backend server running at http://${host}:${port}`);
 });

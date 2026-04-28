@@ -1,6 +1,7 @@
 import json
 import os
 import ssl
+from pathlib import Path
 
 import certifi
 from dotenv import load_dotenv
@@ -18,6 +19,35 @@ os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 if os.getenv("LIVEKIT_INSECURE_SKIP_VERIFY", "false").lower() == "true":
     os.environ["PYTHONHTTPSVERIFY"] = "0"
     ssl._create_default_https_context = ssl._create_unverified_context
+
+PROMPTS_PATH = Path(__file__).with_name("agent_prompts.json")
+
+
+def _load_prompt_config() -> dict:
+    try:
+        return json.loads(PROMPTS_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        # Safe fallback if file is missing/malformed.
+        return {
+            "default_agent_type": "tutor",
+            "agents": {
+                "tutor": {
+                    "system": (
+                        "You are a voice-based AI Tutor. Keep responses short and conversational. "
+                        "Ask what topic the learner wants, explain step-by-step in simple language, "
+                        "give one practical example, and ask one quick check question."
+                    ),
+                    "greeting": (
+                        "Say exactly this in a friendly tone: "
+                        "\"Hello, I am Riya, your AI tutor. What topic would you like to learn today?\" "
+                        "Do not add extra lines."
+                    ),
+                }
+            },
+        }
+
+
+PROMPT_CONFIG = _load_prompt_config()
 
 
 def _parse_job_metadata(ctx: JobContext) -> dict:
@@ -40,32 +70,35 @@ class AITutor(Agent):
         super().__init__(instructions=instructions)
 
 
-def _build_agent_instructions(meta: dict) -> str:
-    base = (
-        "You are an expert AI tutor for beginner learners. "
-        "Keep replies short, practical, and conversational. "
-        "Explain in simple steps, give one example, then ask one follow-up question. "
-        "The student is speaking over LiveKit voice: listen for their questions and respond in audio."
-    )
-    course = (meta.get("courseTitle") or "").strip() or "this course"
-    chapter = (meta.get("chapterTitle") or "").strip() or "this topic"
-    content = (meta.get("chapterContent") or "").strip()
-    if not content:
-        return f"{base}\n\nThe learner selected: {course} — {chapter}."
-    excerpt = content[:18000]
-    return (
-        f"{base}\n\nThe learner is in session for «{course}», chapter «{chapter}». "
-        "Use the following material as ground truth when it helps answer their questions:\n"
-        f"{excerpt}"
-    )
+def _agent_type_from_room_name(room_name: str) -> str:
+    name = (room_name or "").lower()
+    if name.startswith("agent-feedback"):
+        return "feedback"
+    if name.startswith("agent-interview"):
+        return "interview"
+    if name.startswith("agent-health"):
+        return "health"
+    if name.startswith("agent-tutor"):
+        return "tutor"
+    return str(PROMPT_CONFIG.get("default_agent_type") or "tutor")
 
 
-def _greeting_reply_instructions(meta: dict) -> str:
-    course = (meta.get("courseTitle") or "").strip() or "this course"
-    chapter = (meta.get("chapterTitle") or "").strip() or "this topic"
-    return (
-        f"Give a brief spoken greeting (under 25 seconds). Mention you are on voice with them for "
-        f"«{course}» / «{chapter}». Invite their first question. Do not read long bullet lists aloud."
+def _build_agent_instructions(agent_type: str) -> str:
+    agents = PROMPT_CONFIG.get("agents") or {}
+    fallback_type = str(PROMPT_CONFIG.get("default_agent_type") or "tutor")
+    profile = agents.get(agent_type) or agents.get(fallback_type) or {}
+    return str(profile.get("system") or "").strip()
+
+
+def _greeting_reply_instructions(agent_type: str) -> str:
+    agents = PROMPT_CONFIG.get("agents") or {}
+    fallback_type = str(PROMPT_CONFIG.get("default_agent_type") or "tutor")
+    profile = agents.get(agent_type) or agents.get(fallback_type) or {}
+    greeting = str(profile.get("greeting") or "").strip()
+    return greeting or (
+        "Say this in a friendly tone: "
+        "\"Hello, I am Riya, your AI tutor. What topic would you like to learn today?\" "
+        "Do not add extra lines."
     )
 
 
@@ -73,7 +106,8 @@ async def entrypoint(ctx: JobContext) -> None:
     await ctx.connect()
 
     meta = _parse_job_metadata(ctx)
-    agent = AITutor(instructions=_build_agent_instructions(meta))
+    agent_type = (meta.get("agentType") or "").strip().lower() or _agent_type_from_room_name(getattr(ctx.room, "name", ""))
+    agent = AITutor(instructions=_build_agent_instructions(agent_type))
 
     session = AgentSession(
         vad=silero.VAD.load(),
@@ -86,7 +120,7 @@ async def entrypoint(ctx: JobContext) -> None:
     )
 
     await session.start(agent=agent, room=ctx.room)
-    await session.generate_reply(instructions=_greeting_reply_instructions(meta))
+    await session.generate_reply(instructions=_greeting_reply_instructions(agent_type))
 
 
 if __name__ == "__main__":

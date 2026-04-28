@@ -6,6 +6,7 @@ const ChatWindow = ({
   input,
   liveCaptionText,
   liveListeningText,
+  startupHint,
   isLoading,
   isListening,
   aiSpeaking,
@@ -108,7 +109,11 @@ const ChatWindow = ({
       <div className="mb-3 grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="relative flex min-h-[360px] flex-col items-center justify-center rounded-3xl border border-white/10 bg-[#1d1a24]/45 p-4 backdrop-blur-xl">
           <div className="flex flex-col items-center">
-            <div className="relative w-56 overflow-hidden rounded-full border border-white/10 bg-white/[0.03] shadow-[0_0_80px_rgba(124,58,237,0.25)] md:h-[360px] md:w-[360px]">
+            <div
+              className={`relative w-56 overflow-hidden rounded-full border border-white/10 bg-white/[0.03] shadow-[0_0_80px_rgba(124,58,237,0.25)] md:h-[360px] md:w-[360px] ${
+                orbState === "speaking" ? "ai-tutor-glow-speaking" : orbState === "listening" ? "ai-tutor-glow-listening" : ""
+              }`}
+            >
               <img
                 alt="AI Tutor"
                 className="h-56 w-full object-cover md:h-[360px]"
@@ -125,18 +130,10 @@ const ChatWindow = ({
                 ))}
               </div>
             </div>
-            <p className="mt-3 text-base font-medium text-cyan-200">Dr. Anya Sharma • AI Tutor</p>
-            <p className="mt-3 text-xl font-semibold text-white/95">
-              {orbState === "listening" && "I'm listening..."}
-              {orbState === "thinking" && "Let me think..."}
-              {orbState === "speaking" && "Here is your explanation"}
-              {orbState === "idle" && "Ready when you are"}
-            </p>
-            <p className="mt-2 text-xs text-[#ccc3d8]">
-              {selectedChapter
-                ? "Speak naturally. AI replies are shown as a live transcript."
-                : "Pick a chapter from the left to start instantly."}
-            </p>
+            <div className="mt-4 text-center">
+              <p className="text-xl font-semibold text-cyan-100">Dr. Anya Sharma</p>
+              <p className="mt-1 text-base font-medium text-cyan-200">AI Tutor</p>
+            </div>
             {!audioUnlocked ? (
               <button
                 className="mt-3 rounded-full border border-cyan-300/40 bg-cyan-300/10 px-4 py-2 text-xs font-medium text-cyan-100 transition hover:bg-cyan-300/20"
@@ -158,7 +155,9 @@ const ChatWindow = ({
               className="mt-2 min-h-0 flex-1 overflow-y-auto rounded-xl border border-cyan-400/20 bg-black/10 p-3"
             >
               <p className="whitespace-pre-line text-sm leading-relaxed text-cyan-100">
-                {formattedSummary || "The latest AI explanation summary will appear here."}
+                {formattedSummary ||
+                  startupHint ||
+                  "The latest AI explanation summary will appear here."}
               </p>
             </div>
           </div>

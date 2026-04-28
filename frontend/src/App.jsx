@@ -84,6 +84,7 @@ function App() {
   const [activeListening, setActiveListening] = useState(false);
   const [liveCaptionText, setLiveCaptionText] = useState("");
   const [liveListeningText, setLiveListeningText] = useState("");
+  const [startupHint, setStartupHint] = useState("");
   const [autoSpeak, setAutoSpeak] = useState(true);
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [livekitConnected, setLivekitConnected] = useState(false);
@@ -117,6 +118,7 @@ function App() {
     assistant: new Map(),
     user: new Map()
   });
+  const assistantSpeakingTimeoutRef = useRef(null);
   const [audioUnlocked, setAudioUnlocked] = useState(false);
 
   useEffect(() => {
@@ -139,6 +141,12 @@ function App() {
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+  useEffect(() => {
+    if (liveCaptionText.trim()) {
+      setStartupHint("");
+    }
+  }, [liveCaptionText]);
 
   useEffect(() => {
     selectedChapterRef.current = selectedChapter;
@@ -644,6 +652,17 @@ function App() {
         .trim();
 
       if (channel === "assistant") {
+        // Speaking animation should represent *active speech*, not a persistent audio stream.
+        setAiSpeaking(true);
+        isSpeakingRef.current = true;
+        if (assistantSpeakingTimeoutRef.current) {
+          clearTimeout(assistantSpeakingTimeoutRef.current);
+        }
+        assistantSpeakingTimeoutRef.current = setTimeout(() => {
+          setAiSpeaking(false);
+          isSpeakingRef.current = false;
+          assistantSpeakingTimeoutRef.current = null;
+        }, 1100);
         setLiveCaptionText(transcript);
       } else {
         setLiveListeningText(transcript);
@@ -768,6 +787,11 @@ Keep answers concise, conversational, and voice-friendly.`
     activeListeningRef.current = true;
 
     try {
+      if (delayBeforeGreetingMs > 0) {
+        setStartupHint("Warming up your tutor… first response is about to start.");
+      } else {
+        setStartupHint("Connecting to voice tutor…");
+      }
       if (runId !== null && runId !== sessionRunIdRef.current) {
         return;
       }
@@ -800,6 +824,7 @@ Keep answers concise, conversational, and voice-friendly.`
         }
 
         if (LIVEKIT_AGENT_MODE) {
+          setStartupHint("Listening… ask your first question any time.");
           return;
         }
 
@@ -826,12 +851,15 @@ Keep answers concise, conversational, and voice-friendly.`
         }
         if (!LIVEKIT_AGENT_MODE) {
           await handleStartChapter();
+        } else {
+          setStartupHint("Listening… ask your first question any time.");
         }
       }
     } catch (error) {
       if (error?.name === "AbortError") {
         return;
       }
+      setStartupHint("");
       const baseMessage = String(error?.message || "Failed to start hands-free session.");
       if (baseMessage.toLowerCase().includes("requested device not found")) {
         setLivekitError(
@@ -1147,6 +1175,7 @@ Keep answers concise, conversational, and voice-friendly.`
         input={input}
         liveCaptionText={liveCaptionText}
         liveListeningText={liveListeningText}
+        startupHint={startupHint}
         isLoading={isLoading}
         isListening={isListening}
         activeListening={activeListening}

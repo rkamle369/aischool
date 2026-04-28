@@ -1,7 +1,91 @@
 import { Router } from "express";
 import { AccessToken, AgentDispatchClient, RoomServiceClient } from "livekit-server-sdk";
+import dgram from "node:dgram";
+import net from "node:net";
 
 const router = Router();
+
+function resolveRtcProbeHost(httpProbeUrl) {
+  const explicitHost = (process.env.LIVEKIT_NODE_IP || "").trim();
+  if (explicitHost) {
+    return explicitHost;
+  }
+  try {
+    return new URL(httpProbeUrl).hostname;
+  } catch {
+    return null;
+  }
+}
+
+async function probeTcp(host, port, timeoutMs = 2500) {
+  return new Promise((resolve) => {
+    if (!host || !Number.isFinite(port)) {
+      resolve({ ok: false, error: "invalid host/port" });
+      return;
+    }
+    const socket = net.createConnection({ host, port });
+    let settled = false;
+    const finish = (payload) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      socket.destroy();
+      resolve(payload);
+    };
+    socket.setTimeout(timeoutMs);
+    socket.once("connect", () => finish({ ok: true }));
+    socket.once("timeout", () => finish({ ok: false, error: "timeout" }));
+    socket.once("error", (error) => finish({ ok: false, error: error?.message || "tcp error" }));
+  });
+}
+
+async function probeUdp(host, port, timeoutMs = 2500) {
+  return new Promise((resolve) => {
+    if (!host || !Number.isFinite(port)) {
+      resolve({ status: "invalid-target", error: "invalid host/port" });
+      return;
+    }
+    const socket = dgram.createSocket("udp4");
+    let settled = false;
+    const finish = (payload) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      try {
+        socket.close();
+      } catch {
+        // ignore
+      }
+      resolve(payload);
+    };
+
+    const timer = setTimeout(() => {
+      finish({
+        status: "no-refusal",
+        note: "No ICMP/OS refusal observed; UDP might be open or silently filtered."
+      });
+    }, timeoutMs);
+
+    socket.once("error", (error) => {
+      clearTimeout(timer);
+      const message = String(error?.message || "udp error");
+      if (message.toLowerCase().includes("refused")) {
+        finish({ status: "refused", error: message });
+      } else {
+        finish({ status: "error", error: message });
+      }
+    });
+
+    socket.send(Buffer.from("livekit-health"), port, host, (error) => {
+      if (error) {
+        clearTimeout(timer);
+        finish({ status: "error", error: error?.message || "udp send failed" });
+      }
+    });
+  });
+}
 
 function buildAgentDispatchMetadata(tutorContext) {
   if (!tutorContext || typeof tutorContext !== "object") {
@@ -9,6 +93,7 @@ function buildAgentDispatchMetadata(tutorContext) {
   }
 
   const payload = {
+    agentType: String(tutorContext.agentType || "").slice(0, 50),
     courseTitle: String(tutorContext.courseTitle || "").slice(0, 500),
     chapterId: String(tutorContext.chapterId || "").slice(0, 200),
     chapterTitle: String(tutorContext.chapterTitle || "").slice(0, 500),
@@ -120,6 +205,9 @@ router.get("/health", async (_req, res) => {
     .replace(/^wss:\/\//, "https://")
     .replace(/^ws:\/\//, "http://")
     .replace(/\/+$/, "");
+  const rtcProbeHost = resolveRtcProbeHost(httpProbeUrl);
+  const rtcUdpPort = Number(process.env.LIVEKIT_RTC_UDP_PORT || 5000);
+  const rtcTcpPort = Number(process.env.LIVEKIT_RTC_TCP_PORT || 7881);
 
   try {
     const probeResponse = await fetch(httpProbeUrl, {
@@ -156,6 +244,11 @@ router.get("/health", async (_req, res) => {
       authError = error?.message || "LiveKit server rejected API credentials.";
     }
 
+    const [tcpProbe, udpProbe] = await Promise.all([
+      probeTcp(rtcProbeHost, rtcTcpPort),
+      probeUdp(rtcProbeHost, rtcUdpPort)
+    ]);
+
     const statusCode = authVerified ? 200 : 500;
     return res.status(statusCode).json({
       ok: authVerified,
@@ -166,7 +259,14 @@ router.get("/health", async (_req, res) => {
       probeStatus: probeResponse.status,
       tokenGenerated: Boolean(token),
       authVerified,
-      authError
+      authError,
+      rtcProbe: {
+        host: rtcProbeHost,
+        udpPort: rtcUdpPort,
+        tcpPort: rtcTcpPort,
+        tcp: tcpProbe,
+        udp: udpProbe
+      }
     });
   } catch (error) {
     return res.status(500).json({

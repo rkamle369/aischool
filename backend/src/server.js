@@ -10,9 +10,23 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 4000;
 
+const defaultAllowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+const allowedOrigins = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
+const corsAllowlist = allowedOrigins.length ? allowedOrigins : defaultAllowedOrigins;
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173"
+    origin(origin, callback) {
+      // Allow non-browser clients (no Origin header) and same-origin requests.
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      callback(null, corsAllowlist.includes(origin));
+    }
   })
 );
 app.use(express.json());

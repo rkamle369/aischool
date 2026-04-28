@@ -1,0 +1,28 @@
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+ARG VITE_API_BASE_URL=http://localhost:4000
+ARG VITE_LIVEKIT_URL=ws://localhost:7880
+ARG VITE_LIVEKIT_AGENT_MODE=true
+ARG VITE_TUTOR_CALL_SECONDS=300
+
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+ENV VITE_LIVEKIT_URL=${VITE_LIVEKIT_URL}
+ENV VITE_LIVEKIT_AGENT_MODE=${VITE_LIVEKIT_AGENT_MODE}
+ENV VITE_TUTOR_CALL_SECONDS=${VITE_TUTOR_CALL_SECONDS}
+
+RUN npm run build
+
+FROM nginx:1.27-alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

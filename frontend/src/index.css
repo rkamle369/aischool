@@ -117,15 +117,23 @@ body {
 
 .ai-wave-bar-idle,
 .ai-wave-bar-thinking {
-  animation: wave-idle 1.4s ease-in-out infinite;
+  animation: wave-idle 2.8s ease-in-out infinite;
 }
 
 .ai-wave-bar-listening {
-  animation: wave-listening 0.8s ease-in-out infinite;
+  animation: wave-listening 2.2s ease-in-out infinite;
 }
 
 .ai-wave-bar-speaking {
-  animation: wave-speaking 0.45s ease-in-out infinite;
+  animation: wave-speaking 1.6s ease-in-out infinite;
+}
+
+.ai-tutor-glow-speaking {
+  animation: tutor-glow-speaking 4s ease-in-out infinite;
+}
+
+.ai-tutor-glow-listening {
+  animation: tutor-glow-listening 5s ease-in-out infinite;
 }
 
 @keyframes orb-float {
@@ -146,6 +154,30 @@ body {
 @keyframes orb-speaking {
   0%, 100% { transform: scale(1.01); box-shadow: 0 0 0 8px rgba(30, 41, 59, 0.6), 0 0 35px rgba(59, 130, 246, 0.3); }
   50% { transform: scale(1.12); box-shadow: 0 0 0 13px rgba(34, 211, 238, 0.45), 0 0 75px rgba(59, 130, 246, 0.65); }
+}
+
+@keyframes tutor-glow-speaking {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.18), 0 0 26px rgba(34, 211, 238, 0.26),
+      0 0 70px rgba(59, 130, 246, 0.22);
+    transform: translateZ(0) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.32), 0 0 42px rgba(34, 211, 238, 0.42),
+      0 0 110px rgba(59, 130, 246, 0.35);
+    transform: translateZ(0) scale(1.015);
+  }
+}
+
+@keyframes tutor-glow-listening {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.16), 0 0 22px rgba(34, 211, 238, 0.18),
+      0 0 60px rgba(124, 58, 237, 0.16);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.26), 0 0 34px rgba(34, 211, 238, 0.28),
+      0 0 86px rgba(124, 58, 237, 0.22);
+  }
 }
 
 @keyframes ring-listening {

@@ -13,6 +13,7 @@ const ChatWindow = ({
   voiceSupported,
   livekitState,
   livekitError,
+  ttsProvider,
   audioUnlocked,
   onUnlockAudio,
   onEndSession
@@ -102,6 +103,9 @@ const ChatWindow = ({
             <span className={!voiceSupported ? "text-amber-300" : "text-emerald-300"}>
               {!voiceSupported ? "Unsupported browser" : "Hands-free"}
             </span>
+          </p>
+          <p>
+            Provider: <span className="text-emerald-300">{ttsProvider || "openai"}</span>
           </p>
         </div>
       </header>

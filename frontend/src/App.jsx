@@ -19,6 +19,11 @@ const AUTO_SEND_SILENCE_MS = Number(
   runtimeConfig.VITE_AUTO_SEND_SILENCE_MS || import.meta.env.VITE_AUTO_SEND_SILENCE_MS || 1800
 );
 const TTS_PLAYBACK_RATE = Number(runtimeConfig.VITE_TTS_PLAYBACK_RATE || import.meta.env.VITE_TTS_PLAYBACK_RATE || 1.05);
+const TTS_PROVIDER_LABEL = (
+  runtimeConfig.VITE_AGENT_TTS_PROVIDER ||
+  import.meta.env.VITE_AGENT_TTS_PROVIDER ||
+  "openai"
+).toLowerCase();
 
 const normalizeLiveKitUrl = (rawUrl) => {
   const value = (rawUrl || "").trim().replace(/\/+$/, "");
@@ -1191,6 +1196,7 @@ Keep answers concise, conversational, and voice-friendly.`
         livekitConnected={livekitConnected}
         livekitState={livekitState}
         livekitError={livekitError}
+        ttsProvider={TTS_PROVIDER_LABEL}
         audioUnlocked={audioUnlocked}
         onUnlockAudio={unlockAudioPlayback}
         onEndSession={handleEndSession}

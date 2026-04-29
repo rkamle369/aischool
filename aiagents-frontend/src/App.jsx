@@ -7,7 +7,22 @@ const runtimeConfig = window.__APP_CONFIG__ || {};
 const API_BASE_URL = runtimeConfig.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 const LIVEKIT_URL = runtimeConfig.VITE_LIVEKIT_URL || import.meta.env.VITE_LIVEKIT_URL || "";
 const LIVEKIT_AGENT_MODE = (runtimeConfig.VITE_LIVEKIT_AGENT_MODE || import.meta.env.VITE_LIVEKIT_AGENT_MODE) !== "false";
-const TUTOR_CALL_SECONDS = Number(runtimeConfig.VITE_TUTOR_CALL_SECONDS || import.meta.env.VITE_TUTOR_CALL_SECONDS || 300);
+const FEEDBACK_CALL_SECONDS = Number(
+  runtimeConfig.VITE_FEEDBACK_CALL_SECONDS || import.meta.env.VITE_FEEDBACK_CALL_SECONDS || 120
+);
+const HEALTH_CALL_SECONDS = Number(
+  runtimeConfig.VITE_HEALTH_CALL_SECONDS || import.meta.env.VITE_HEALTH_CALL_SECONDS || 300
+);
+const INTERVIEW_CALL_SECONDS = Number(
+  runtimeConfig.VITE_INTERVIEW_CALL_SECONDS || import.meta.env.VITE_INTERVIEW_CALL_SECONDS || 600
+);
+const TUTOR_CALL_SECONDS = Number(runtimeConfig.VITE_TUTOR_CALL_SECONDS || import.meta.env.VITE_TUTOR_CALL_SECONDS || 900);
+const AGENT_TTS_PROVIDER = (
+  runtimeConfig.VITE_AGENT_TTS_PROVIDER ||
+  import.meta.env.VITE_AGENT_TTS_PROVIDER ||
+  "openai"
+).toLowerCase();
+const INVALID_CLOSE_PHRASE = "your response is not correct. we are closing this session now.";
 
 function normalizeLiveKitUrl(rawUrl) {
   const value = (rawUrl || "").trim().replace(/\/+$/, "");
@@ -20,6 +35,14 @@ function normalizeLiveKitUrl(rawUrl) {
 
 function buildRoomName(agent, suffix) {
   return `${agent.roomPrefix}-${suffix}`;
+}
+
+function getAgentCallLimitSeconds(agentId) {
+  if (agentId === "feedback") return FEEDBACK_CALL_SECONDS;
+  if (agentId === "health") return HEALTH_CALL_SECONDS;
+  if (agentId === "interview") return INTERVIEW_CALL_SECONDS;
+  if (agentId === "tutor") return TUTOR_CALL_SECONDS;
+  return 300;
 }
 
 export default function App() {
@@ -43,6 +66,7 @@ export default function App() {
   const assistantSpeakingTimeoutRef = useRef(null);
   const timerRef = useRef(null);
   const assistantSegmentsRef = useRef(new Map());
+  const endingSessionRef = useRef(false);
 
   const unlockAudioPlayback = useCallback(async () => {
     setAudioUnlocked(true);
@@ -89,6 +113,17 @@ export default function App() {
       setLivekitState("disconnected");
     }
   }, []);
+
+  const closeSessionToPicker = useCallback(async () => {
+    try {
+      await disconnectLiveKit();
+    } finally {
+      setScreen("picker");
+      setIsStarting(false);
+      setShouldAutoStartCall(false);
+      endingSessionRef.current = false;
+    }
+  }, [disconnectLiveKit]);
 
   const connectLiveKit = useCallback(async () => {
     setLivekitError("");
@@ -189,6 +224,14 @@ export default function App() {
 
       if (transcript) {
         setLiveCaptionText(transcript);
+        const normalizedTranscript = transcript.toLowerCase();
+        if (normalizedTranscript.includes(INVALID_CLOSE_PHRASE) && !endingSessionRef.current) {
+          endingSessionRef.current = true;
+          setLivekitError("Session closed: response validation failed.");
+          setTimeout(() => {
+            void closeSessionToPicker();
+          }, 600);
+        }
       }
       setAiSpeaking(true);
       if (assistantSpeakingTimeoutRef.current) {
@@ -210,14 +253,16 @@ export default function App() {
       voiceIsolation: true
     });
 
-    // 5-minute window for tutor.
-    if (selectedAgent.id === "tutor" && Number.isFinite(TUTOR_CALL_SECONDS) && TUTOR_CALL_SECONDS > 0) {
+    const maxCallSeconds = getAgentCallLimitSeconds(selectedAgent.id);
+    if (Number.isFinite(maxCallSeconds) && maxCallSeconds > 0) {
       timerRef.current = setTimeout(() => {
-        void disconnectLiveKit();
-        setScreen("picker");
-      }, TUTOR_CALL_SECONDS * 1000);
+        if (endingSessionRef.current) return;
+        endingSessionRef.current = true;
+        setLivekitError("Session ended: time limit reached.");
+        void closeSessionToPicker();
+      }, maxCallSeconds * 1000);
     }
-  }, [disconnectLiveKit, selectedAgent]);
+  }, [selectedAgent, closeSessionToPicker]);
 
   const startCall = useCallback(async () => {
     if (isStarting) {
@@ -239,10 +284,10 @@ export default function App() {
     }
   }, [connectLiveKit, unlockAudioPlayback, isStarting]);
 
-  const endCall = useCallback(async () => {
+  const endCall = useCallback(async ({ speakGoodbye = true } = {}) => {
     // Optional goodbye via browser TTS (frontend-only).
     try {
-      if (window.speechSynthesis) {
+      if (speakGoodbye && window.speechSynthesis) {
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(
           selectedAgent.id === "feedback"
@@ -256,13 +301,11 @@ export default function App() {
       // ignore
     }
     try {
-      await disconnectLiveKit();
+      await closeSessionToPicker();
     } finally {
-      setScreen("picker");
-      setIsStarting(false);
-      setShouldAutoStartCall(false);
+      // no-op; closeSessionToPicker handles teardown and state reset.
     }
-  }, [disconnectLiveKit]);
+  }, [closeSessionToPicker, selectedAgent.id]);
 
   useEffect(() => {
     if (screen !== "call" || !shouldAutoStartCall || isStarting) {
@@ -356,6 +399,9 @@ export default function App() {
                 <p className="text-sm font-semibold text-slate-100">{selectedAgent.name}</p>
                 <p className="mt-1 text-xs text-slate-300/80">
                   LiveKit: <span className="text-cyan-200">{livekitState}</span>
+                </p>
+                <p className="mt-1 text-xs text-slate-300/80">
+                  Voice Provider: <span className="text-emerald-300">{AGENT_TTS_PROVIDER}</span>
                 </p>
               </div>
               <div className="flex items-center gap-2">

@@ -17,6 +17,9 @@ const INTERVIEW_CALL_SECONDS = Number(
   runtimeConfig.VITE_INTERVIEW_CALL_SECONDS || import.meta.env.VITE_INTERVIEW_CALL_SECONDS || 600
 );
 const TUTOR_CALL_SECONDS = Number(runtimeConfig.VITE_TUTOR_CALL_SECONDS || import.meta.env.VITE_TUTOR_CALL_SECONDS || 900);
+const HINDI_CALL_SECONDS = Number(
+  runtimeConfig.VITE_HINDI_CALL_SECONDS || import.meta.env.VITE_HINDI_CALL_SECONDS || 300
+);
 const AGENT_TTS_PROVIDER = (
   runtimeConfig.VITE_AGENT_TTS_PROVIDER ||
   import.meta.env.VITE_AGENT_TTS_PROVIDER ||
@@ -42,6 +45,7 @@ function getAgentCallLimitSeconds(agentId) {
   if (agentId === "health") return HEALTH_CALL_SECONDS;
   if (agentId === "interview") return INTERVIEW_CALL_SECONDS;
   if (agentId === "tutor") return TUTOR_CALL_SECONDS;
+  if (agentId === "hindi-companion") return HINDI_CALL_SECONDS;
   return 300;
 }
 
@@ -59,7 +63,6 @@ export default function App() {
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
-  const [shouldAutoStartCall, setShouldAutoStartCall] = useState(false);
 
   const roomRef = useRef(null);
   const remoteAudioElementsRef = useRef(new Map());
@@ -120,7 +123,6 @@ export default function App() {
     } finally {
       setScreen("picker");
       setIsStarting(false);
-      setShouldAutoStartCall(false);
       endingSessionRef.current = false;
     }
   }, [disconnectLiveKit]);
@@ -308,14 +310,6 @@ export default function App() {
   }, [closeSessionToPicker, selectedAgent.id]);
 
   useEffect(() => {
-    if (screen !== "call" || !shouldAutoStartCall || isStarting) {
-      return;
-    }
-    void startCall();
-    setShouldAutoStartCall(false);
-  }, [screen, shouldAutoStartCall, isStarting, startCall]);
-
-  useEffect(() => {
     return () => {
       void disconnectLiveKit();
     };
@@ -380,7 +374,6 @@ export default function App() {
                   onClick={() => {
                     setSelectedAgentId(agent.id);
                     setScreen("call");
-                    setShouldAutoStartCall(true);
                   }}
                   className="rounded-2xl border border-white/10 bg-[#1d1a24]/40 px-4 py-4 text-left backdrop-blur-xl transition hover:border-white/20"
                 >
@@ -467,18 +460,23 @@ export default function App() {
                 End
               </button>
             ) : (
-              <button
-                type="button"
-                onClick={startCall}
-                disabled={isStarting}
-                className={`w-full rounded-full px-4 py-4 text-base font-semibold text-cyan-100 transition ${
-                  isStarting
-                    ? "cursor-not-allowed bg-cyan-400/10 opacity-70"
-                    : "bg-cyan-400/20 hover:bg-cyan-400/25"
-                }`}
-              >
-                {isStarting ? "Starting..." : livekitState === "disconnected" ? "Reconnect" : "Start"}
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={startCall}
+                  disabled={isStarting}
+                  className={`w-full rounded-full px-4 py-4 text-base font-semibold text-cyan-100 transition ${
+                    isStarting
+                      ? "cursor-not-allowed bg-cyan-400/10 opacity-70"
+                      : "bg-cyan-400/20 hover:bg-cyan-400/25"
+                  }`}
+                >
+                  {isStarting ? "Starting..." : livekitState === "disconnected" ? "Reconnect" : "Start"}
+                </button>
+                <p className="mt-2 text-center text-[11px] text-slate-300/80">
+                  iPhone tip: tap <span className="font-semibold text-cyan-200">Start</span> to unlock audio.
+                </p>
+              </>
             )}
           </div>
 

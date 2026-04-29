@@ -94,6 +94,8 @@ def _agent_type_from_room_name(room_name: str) -> str:
         return "health"
     if name.startswith("agent-tutor"):
         return "tutor"
+    if name.startswith("agent-hindi"):
+        return "hindi-companion"
     return str(PROMPT_CONFIG.get("default_agent_type") or "tutor")
 
 
@@ -130,11 +132,12 @@ def _load_vad():
     )
 
 
-def _build_stt():
+def _build_stt(agent_type: str):
     model = os.getenv("OPENAI_STT_MODEL", "gpt-4o-mini-transcribe")
+    stt_language = "hi" if agent_type == "hindi-companion" else "en"
     kwargs: dict = {
         "model": model,
-        "language": "en",
+        "language": stt_language,
         "detect_language": False,
     }
     nr_raw = (os.getenv("OPENAI_STT_NOISE_REDUCTION") or "").strip().lower()
@@ -160,8 +163,17 @@ def _build_llm():
         return openai.LLM(model=model)
 
 
-def _build_tts():
+def _build_tts(agent_type: str):
     provider = (os.getenv("AGENT_TTS_PROVIDER") or os.getenv("TTS_PROVIDER") or "openai").strip().lower()
+    if agent_type == "hindi-companion":
+        provider = (os.getenv("HINDI_AGENT_TTS_PROVIDER") or provider).strip().lower()
+        if provider == "sarvam":
+            logger.warning(
+                "HINDI_AGENT_TTS_PROVIDER=sarvam configured. Direct Sarvam streaming TTS adapter is not wired yet; "
+                "falling back to ElevenLabs/OpenAI for now."
+            )
+            provider = "elevenlabs"
+
     if provider == "elevenlabs":
         api_key = (os.getenv("ELEVENLABS_API_KEY") or "").strip()
         if not api_key:
@@ -173,6 +185,12 @@ def _build_tts():
                 voice_id = (os.getenv("ELEVENLABS_VOICE_ID") or "21m00Tcm4TlvDq8ikWAM").strip()
                 model = (os.getenv("ELEVENLABS_MODEL_ID") or "eleven_turbo_v2_5").strip()
                 logger.info("Using ElevenLabs TTS provider", extra={"provider": "elevenlabs", "voice_id": voice_id, "model": model})
+                if agent_type == "hindi-companion":
+                    try:
+                        return elevenlabs.TTS(voice_id=voice_id, model=model, api_key=api_key, language="hi")
+                    except TypeError:
+                        # older plugin versions may not accept language kwarg
+                        return elevenlabs.TTS(voice_id=voice_id, model=model, api_key=api_key)
                 return elevenlabs.TTS(voice_id=voice_id, model=model, api_key=api_key)
             except ImportError:
                 logger.warning(
@@ -227,9 +245,9 @@ async def entrypoint(ctx: JobContext) -> None:
 
     session = AgentSession(
         vad=_load_vad(),
-        stt=_build_stt(),
+        stt=_build_stt(agent_type),
         llm=_build_llm(),
-        tts=_build_tts(),
+        tts=_build_tts(agent_type),
     )
 
     await _start_session(session, agent, ctx.room)

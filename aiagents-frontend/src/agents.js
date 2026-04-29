@@ -29,6 +29,14 @@ export const AGENTS = [
     roomPrefix: "agent-health",
     openingHint:
       "Hi! I can help with general wellness guidance. What would you like to talk about today? (This is not medical advice.)"
+  },
+  {
+    id: "hindi-companion",
+    name: "Hindi Companion",
+    subtitle: "Local news, stories, and daily chat",
+    roomPrefix: "agent-hindi",
+    openingHint:
+      "Namaste! Main aapki Hindi companion hoon. Aaj aap local news, kahani, ya normal baat-cheet mein kya sunna chahenge?"
   }
 ];
 

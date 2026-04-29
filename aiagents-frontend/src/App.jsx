@@ -63,6 +63,8 @@ export default function App() {
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
+  const [shouldAutoStartCall, setShouldAutoStartCall] = useState(false);
+  const [hasEverConnected, setHasEverConnected] = useState(false);
 
   const roomRef = useRef(null);
   const remoteAudioElementsRef = useRef(new Map());
@@ -123,6 +125,7 @@ export default function App() {
     } finally {
       setScreen("picker");
       setIsStarting(false);
+      setShouldAutoStartCall(false);
       endingSessionRef.current = false;
     }
   }, [disconnectLiveKit]);
@@ -247,13 +250,19 @@ export default function App() {
 
     await room.connect(normalizedLivekitUrl, token);
     setLivekitState("connected");
+    setHasEverConnected(true);
 
-    await room.localParticipant.setMicrophoneEnabled(true, {
-      echoCancellation: true,
-      noiseSuppression: true,
-      autoGainControl: true,
-      voiceIsolation: true
-    });
+    try {
+      await room.localParticipant.setMicrophoneEnabled(true, {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        voiceIsolation: true
+      });
+    } catch {
+      // iOS Safari can reject advanced constraints (e.g. voiceIsolation).
+      await room.localParticipant.setMicrophoneEnabled(true);
+    }
 
     const maxCallSeconds = getAgentCallLimitSeconds(selectedAgent.id);
     if (Number.isFinite(maxCallSeconds) && maxCallSeconds > 0) {
@@ -308,6 +317,14 @@ export default function App() {
       // no-op; closeSessionToPicker handles teardown and state reset.
     }
   }, [closeSessionToPicker, selectedAgent.id]);
+
+  useEffect(() => {
+    if (screen !== "call" || !shouldAutoStartCall || isStarting) {
+      return;
+    }
+    void startCall();
+    setShouldAutoStartCall(false);
+  }, [screen, shouldAutoStartCall, isStarting, startCall]);
 
   useEffect(() => {
     return () => {
@@ -374,6 +391,7 @@ export default function App() {
                   onClick={() => {
                     setSelectedAgentId(agent.id);
                     setScreen("call");
+                    setShouldAutoStartCall(true);
                   }}
                   className="rounded-2xl border border-white/10 bg-[#1d1a24]/40 px-4 py-4 text-left backdrop-blur-xl transition hover:border-white/20"
                 >
@@ -471,7 +489,7 @@ export default function App() {
                       : "bg-cyan-400/20 hover:bg-cyan-400/25"
                   }`}
                 >
-                  {isStarting ? "Starting..." : livekitState === "disconnected" ? "Reconnect" : "Start"}
+                  {isStarting ? "Starting..." : livekitState === "disconnected" && hasEverConnected ? "Reconnect" : "Start"}
                 </button>
                 <p className="mt-2 text-center text-[11px] text-slate-300/80">
                   iPhone tip: tap <span className="font-semibold text-cyan-200">Start</span> to unlock audio.

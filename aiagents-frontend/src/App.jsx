@@ -26,6 +26,8 @@ const AGENT_TTS_PROVIDER = (
   "openai"
 ).toLowerCase();
 const INVALID_CLOSE_PHRASE = "your response is not correct. we are closing this session now.";
+const CONNECT_TIMEOUT_MS = 15000;
+const TOKEN_TIMEOUT_MS = 10000;
 
 function normalizeLiveKitUrl(rawUrl) {
   const value = (rawUrl || "").trim().replace(/\/+$/, "");
@@ -49,6 +51,25 @@ function getAgentCallLimitSeconds(agentId) {
   return 300;
 }
 
+function isIOSDevice() {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const platform = navigator.platform || "";
+  return /iPad|iPhone|iPod/.test(ua) || (platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+async function withTimeout(promise, timeoutMs, message) {
+  let timeoutHandle = null;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutHandle = setTimeout(() => reject(new Error(message)), timeoutMs);
+  });
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
+  }
+}
+
 export default function App() {
   const [screen, setScreen] = useState("picker"); // picker | call
   const [selectedAgentId, setSelectedAgentId] = useState("tutor");
@@ -65,6 +86,7 @@ export default function App() {
   const [isStarting, setIsStarting] = useState(false);
   const [shouldAutoStartCall, setShouldAutoStartCall] = useState(false);
   const [hasEverConnected, setHasEverConnected] = useState(false);
+  const [requiresManualStart, setRequiresManualStart] = useState(false);
 
   const roomRef = useRef(null);
   const remoteAudioElementsRef = useRef(new Map());
@@ -147,9 +169,12 @@ export default function App() {
     const roomName = buildRoomName(selectedAgent, suffix);
     const participantName = `mobile-${crypto.randomUUID().slice(0, 8)}`;
 
+    const controller = new AbortController();
+    const tokenTimeout = setTimeout(() => controller.abort(), TOKEN_TIMEOUT_MS);
     const tokenResponse = await fetch(`${API_BASE_URL}/livekit/token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
       body: JSON.stringify({
         roomName,
         participantName,
@@ -159,6 +184,7 @@ export default function App() {
         }
       })
     });
+    clearTimeout(tokenTimeout);
 
     if (!tokenResponse.ok) {
       let details = "";
@@ -248,7 +274,11 @@ export default function App() {
       }, 1100);
     });
 
-    await room.connect(normalizedLivekitUrl, token);
+    await withTimeout(
+      room.connect(normalizedLivekitUrl, token),
+      CONNECT_TIMEOUT_MS,
+      "LiveKit connection timed out. Please tap Reconnect."
+    );
     setLivekitState("connected");
     setHasEverConnected(true);
 
@@ -290,10 +320,15 @@ export default function App() {
       setLivekitError(String(error?.message || error || "Failed to start call."));
       setScreen("call");
       setLivekitState("disconnected");
+      try {
+        await disconnectLiveKit();
+      } catch {
+        // ignore cleanup errors
+      }
     } finally {
       setIsStarting(false);
     }
-  }, [connectLiveKit, unlockAudioPlayback, isStarting]);
+  }, [connectLiveKit, unlockAudioPlayback, isStarting, disconnectLiveKit]);
 
   const endCall = useCallback(async ({ speakGoodbye = true } = {}) => {
     // Optional goodbye via browser TTS (frontend-only).
@@ -391,7 +426,12 @@ export default function App() {
                   onClick={() => {
                     setSelectedAgentId(agent.id);
                     setScreen("call");
-                    setShouldAutoStartCall(true);
+                    const isIOS = isIOSDevice();
+                    setRequiresManualStart(isIOS);
+                    setShouldAutoStartCall(!isIOS);
+                    if (isIOS) {
+                      setLivekitError("For iPhone, tap Start to begin the voice call.");
+                    }
                   }}
                   className="rounded-2xl border border-white/10 bg-[#1d1a24]/40 px-4 py-4 text-left backdrop-blur-xl transition hover:border-white/20"
                 >
@@ -492,7 +532,9 @@ export default function App() {
                   {isStarting ? "Starting..." : livekitState === "disconnected" && hasEverConnected ? "Reconnect" : "Start"}
                 </button>
                 <p className="mt-2 text-center text-[11px] text-slate-300/80">
-                  iPhone tip: tap <span className="font-semibold text-cyan-200">Start</span> to unlock audio.
+                  {requiresManualStart
+                    ? "iPhone mode: tap Start to begin."
+                    : "If audio is blocked, tap Reconnect once."}
                 </p>
               </>
             )}

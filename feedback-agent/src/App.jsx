@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Room, RoomEvent } from "livekit-client";
-import welcomeBg from "../welcome_to_aura_feedback_dark/screen.png";
+import auraVideo from "../aura-entry.mp4";
+import auraExitVideo from "../aura-exit.mp4";
 import sessionBackdrop from "../ai_feedback_session/screen.png";
-import thankYouHero from "../thank_you/screen.png";
 import avatarImg from "../image.png/screen.png";
 
 const runtimeConfig = window.__APP_CONFIG__ || {};
@@ -28,6 +28,8 @@ const INVALID_CLOSE_PHRASE = "your response is not correct. we are closing this 
 const CONNECT_TIMEOUT_MS = 15000;
 const TOKEN_TIMEOUT_MS = 10000;
 const AUDIO_UNLOCK_TIMEOUT_MS = 3000;
+const EXIT_REDIRECT_MS = 10000;
+const ENTRY_REPEAT_DELAY_MS = 10000;
 
 function normalizeLiveKitUrl(rawUrl) {
   const value = (rawUrl || "").trim().replace(/\/+$/, "");
@@ -70,15 +72,12 @@ function buildRoomName(suffix) {
 
 export default function App() {
   const [phase, setPhase] = useState("welcome");
-  const [thanksReason, setThanksReason] = useState("user");
+  const [welcomeVideoKey, setWelcomeVideoKey] = useState(0);
 
   const [livekitState, setLivekitState] = useState("disconnected");
   const [livekitError, setLivekitError] = useState("");
-  const [audioUnlocked, setAudioUnlocked] = useState(false);
 
-  const [liveCaptionText, setLiveCaptionText] = useState("");
   const [aiSpeaking, setAiSpeaking] = useState(false);
-  const [summaryOpen, setSummaryOpen] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [hasEverConnected, setHasEverConnected] = useState(false);
   const [requiresManualStart, setRequiresManualStart] = useState(false);
@@ -92,9 +91,13 @@ export default function App() {
   const tickIntervalRef = useRef(null);
   const assistantSegmentsRef = useRef(new Map());
   const endingSessionRef = useRef(false);
+  const welcomeVideoRef = useRef(null);
+  const welcomeReplayTimerRef = useRef(null);
+  const exitVideoRef = useRef(null);
+  /** User just tapped “End session”; browser may allow unmuted video.play() in the same flow. */
+  const exitPlayWithSoundRef = useRef(false);
 
   const unlockAudioPlayback = useCallback(async () => {
-    setAudioUnlocked(true);
     try {
       const primer = new Audio(
         "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="
@@ -122,6 +125,13 @@ export default function App() {
     }
   }, []);
 
+  const clearWelcomeReplayTimer = useCallback(() => {
+    if (welcomeReplayTimerRef.current) {
+      clearTimeout(welcomeReplayTimerRef.current);
+      welcomeReplayTimerRef.current = null;
+    }
+  }, []);
+
   const disconnectLiveKit = useCallback(async () => {
     clearSessionTimers();
     if (assistantSpeakingTimeoutRef.current) {
@@ -129,9 +139,7 @@ export default function App() {
       assistantSpeakingTimeoutRef.current = null;
     }
     setAiSpeaking(false);
-    setLiveCaptionText("");
     assistantSegmentsRef.current.clear();
-    setSummaryOpen(false);
 
     const roomToClose = roomRef.current;
     roomRef.current = null;
@@ -151,32 +159,35 @@ export default function App() {
     }
   }, [clearSessionTimers]);
 
-  const goToThanks = useCallback(
-    async (reason) => {
-      setThanksReason(reason);
-      try {
-        await disconnectLiveKit();
-      } finally {
-        setPhase("thanks");
-        setIsStarting(false);
-        endingSessionRef.current = false;
-      }
-    },
-    [disconnectLiveKit]
-  );
+  const goToExitVideo = useCallback(async ({ playSound = false } = {}) => {
+    exitPlayWithSoundRef.current = playSound;
+    /** Show exit UI before awaiting disconnect so `video.play()` can run in the same gesture window as End. */
+    setPhase("exit");
+    setIsStarting(false);
+    endingSessionRef.current = false;
+    try {
+      await disconnectLiveKit();
+    } catch {
+      // ignore teardown errors
+    }
+  }, [disconnectLiveKit]);
 
   const resetToWelcome = useCallback(async () => {
     await disconnectLiveKit();
+    clearWelcomeReplayTimer();
     setPhase("welcome");
     setLivekitError("");
     setRemainingSeconds(AURA_FEEDBACK_SECONDS);
     setIsStarting(false);
+    setHasEverConnected(false);
+    setRequiresManualStart(false);
+    setAiSpeaking(false);
+    setWelcomeVideoKey((v) => v + 1);
     endingSessionRef.current = false;
-  }, [disconnectLiveKit]);
+  }, [clearWelcomeReplayTimer, disconnectLiveKit]);
 
   const connectLiveKit = useCallback(async () => {
     setLivekitError("");
-    setLiveCaptionText("");
     setAiSpeaking(false);
     assistantSegmentsRef.current.clear();
 
@@ -278,13 +289,12 @@ export default function App() {
         .trim();
 
       if (transcript) {
-        setLiveCaptionText(transcript);
         const normalizedTranscript = transcript.toLowerCase();
         if (normalizedTranscript.includes(INVALID_CLOSE_PHRASE) && !endingSessionRef.current) {
           endingSessionRef.current = true;
           setLivekitError("Session closed: validation did not pass.");
           setTimeout(() => {
-            void goToThanks("validation");
+            void goToExitVideo({ playSound: false });
           }, 600);
         }
       }
@@ -330,10 +340,10 @@ export default function App() {
         if (endingSessionRef.current) return;
         endingSessionRef.current = true;
         setLivekitError("Session ended: 5 minute limit reached.");
-        void goToThanks("timeout");
+        void goToExitVideo({ playSound: false });
       }, limit * 1000);
     }
-  }, [disconnectLiveKit, goToThanks]);
+  }, [disconnectLiveKit, goToExitVideo]);
 
   const startCall = useCallback(async () => {
     if (isStarting) return;
@@ -357,26 +367,62 @@ export default function App() {
     }
   }, [connectLiveKit, unlockAudioPlayback, isStarting, disconnectLiveKit]);
 
-  const endCall = useCallback(async () => {
-    try {
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance("Thank you for your feedback. Goodbye.");
-        u.lang = "en-US";
-        u.rate = 0.95;
-        window.speechSynthesis.speak(u);
-      }
-    } catch {
-      // ignore
-    }
-    await goToThanks("user");
-  }, [goToThanks]);
+  const endCall = useCallback(() => {
+    void unlockAudioPlayback();
+    void goToExitVideo({ playSound: true });
+  }, [goToExitVideo, unlockAudioPlayback]);
 
   useEffect(() => {
     return () => {
+      clearWelcomeReplayTimer();
       void disconnectLiveKit();
     };
-  }, [disconnectLiveKit]);
+  }, [clearWelcomeReplayTimer, disconnectLiveKit]);
+
+  const handleWelcomeVideoEnded = useCallback(() => {
+    const el = welcomeVideoRef.current;
+    if (!el) return;
+    clearWelcomeReplayTimer();
+    welcomeReplayTimerRef.current = setTimeout(() => {
+      const target = welcomeVideoRef.current;
+      if (!target) return;
+      target.currentTime = 0;
+      void target.play().catch(() => {
+        // Ignore autoplay restrictions; next user interaction can resume.
+      });
+      welcomeReplayTimerRef.current = null;
+    }, ENTRY_REPEAT_DELAY_MS);
+  }, [clearWelcomeReplayTimer]);
+
+  useEffect(() => {
+    if (phase !== "exit") return;
+    const el = exitVideoRef.current;
+    if (!el) return;
+    el.currentTime = 0;
+    const allowSound = exitPlayWithSoundRef.current;
+    el.muted = !allowSound;
+    const fallbackTimer = setTimeout(() => {
+      void resetToWelcome();
+    }, EXIT_REDIRECT_MS);
+    const run = async () => {
+      try {
+        await el.play();
+      } catch {
+        if (allowSound) {
+          try {
+            el.muted = true;
+            await el.play();
+          } catch {
+            // Keep exit screen visible; fallback timer handles redirect.
+          }
+        }
+      }
+    };
+    void run();
+    return () => {
+      clearTimeout(fallbackTimer);
+    };
+  }, [phase, resetToWelcome]);
 
   const orbState = useMemo(() => {
     if (aiSpeaking) return "speaking";
@@ -399,118 +445,76 @@ export default function App() {
     }
   }, [startCall]);
 
-  const thanksSubtitle = useMemo(() => {
-    if (thanksReason === "timeout") return "The session closed automatically after five minutes.";
-    if (thanksReason === "validation") return "We could not accept one of the responses. You can try again anytime.";
-    return "Your voice session has ended.";
-  }, [thanksReason]);
-
   if (phase === "welcome") {
     return (
-      <main className="relative isolate mx-auto min-h-[100dvh] w-full max-w-lg bg-aura-bg">
-        {/* Background art: fixed so content scrolls independently; strong scrim so UI never fights the image */}
-        <div className="pointer-events-none fixed inset-0 z-0 mx-auto max-w-lg overflow-hidden">
-          <img alt="" className="h-full w-full object-cover object-center" src={welcomeBg} />
-          <div
-            className="absolute inset-0 bg-gradient-to-b from-[#051424]/88 via-[#051424]/82 to-[#051424]/96"
-            aria-hidden
-          />
-        </div>
-
-        <div className="relative z-10 flex min-h-[100dvh] flex-col">
-          <header className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#051424]/90 px-4 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-[#051424]/75">
-            <div className="flex items-center gap-2">
-              <span className="text-xl text-aura-tertiary" aria-hidden>
-                ◆
-              </span>
-              <span className="bg-gradient-to-r from-aura-tertiary to-aura-secondary bg-clip-text text-base font-black tracking-tight text-transparent">
-                Aura Feedback
-              </span>
-            </div>
-            {!audioUnlocked ? (
-              <button
-                type="button"
-                onClick={unlockAudioPlayback}
-                className="rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs text-aura-on-surface"
-              >
-                Enable audio
-              </button>
-            ) : null}
-          </header>
-
-          <div className="flex min-h-0 flex-1 flex-col justify-center px-4 py-6 sm:px-6">
-            <div className="glass-panel mx-auto w-full max-w-md rounded-2xl border border-white/12 bg-[#051424]/90 p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-8">
-              <div className="mb-4 inline-flex items-center rounded-full border border-aura-secondary/30 bg-aura-secondary-container/25 px-3 py-1">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-aura-secondary">
-                  Intelligent insights
-                </span>
-              </div>
-              <h1 className="text-2xl font-bold leading-tight text-aura-on-surface sm:text-4xl">
-                Share your thoughts
-                <br />
-                <span className="text-aura-tertiary">with Aura</span>
-              </h1>
-              <p className="mt-4 text-left text-sm leading-relaxed text-aura-on-variant sm:text-center sm:text-base">
-                Voice-guided feedback in English. Share your experience—up to five minutes per session.
-              </p>
-            </div>
+      <main className="relative isolate mx-auto min-h-[100dvh] w-full max-w-lg overflow-hidden bg-black">
+        <video
+          key={welcomeVideoKey}
+          ref={welcomeVideoRef}
+          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
+          autoPlay
+          playsInline
+          preload="auto"
+          onEnded={handleWelcomeVideoEnded}
+          aria-hidden
+        >
+          <source src={auraVideo} type="video/mp4" />
+        </video>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black/65 via-black/35 to-transparent" />
+        <header className="absolute inset-x-0 top-0 z-20">
+          <div className="mx-3 mt-3 rounded-2xl border border-white/15 bg-black/45 px-4 py-2 backdrop-blur-md">
+            <p className="text-center text-sm font-semibold tracking-wide text-cyan-100">Aura Voice Feedback</p>
           </div>
+        </header>
+        {/* Bottom readability strip for the CTA only */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-48 bg-gradient-to-t from-[#051424]/95 via-[#051424]/55 to-transparent"
+          aria-hidden
+        />
 
-          <footer className="shrink-0 border-t border-white/10 bg-[#051424]/95 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur-md supports-[backdrop-filter]:bg-[#051424]/88">
-            <button
-              type="button"
-              onClick={beginFeedback}
-              className="flex w-full items-center justify-center gap-3 rounded-xl bg-aura-secondary py-4 text-base font-semibold text-aura-on-secondary shadow-lg ring-1 ring-cyan-400/25 transition hover:brightness-110 active:scale-[0.99] sm:text-lg"
-            >
-              <span aria-hidden>🎤</span>
-              Start feedback
-              <span aria-hidden>→</span>
-            </button>
-            <p className="mt-2 text-center text-[11px] text-aura-outline">
-              Microphone turns on after you connect on the next screen.
-            </p>
-          </footer>
-        </div>
-      </main>
-    );
-  }
-
-  if (phase === "thanks") {
-    return (
-      <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-aura-bg px-6">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-[-10%] top-[-10%] h-[50%] w-[50%] rounded-full bg-aura-secondary/10 blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-aura-tertiary/10 blur-[120px]" />
-        </div>
-
-        <div className="relative z-10 flex w-full max-w-md flex-col items-center text-center">
-          <div className="glass-panel mb-6 overflow-hidden rounded-[2rem] p-2 shadow-2xl">
-            <img
-              alt=""
-              className="h-48 w-48 rounded-3xl object-cover shadow-xl sm:h-56 sm:w-56"
-              src={thankYouHero}
-            />
-          </div>
-          <h1 className="bg-gradient-to-r from-aura-secondary to-aura-tertiary bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
-            Thank you for your feedback!
-          </h1>
-          <p className="mt-3 text-aura-on-variant">{thanksSubtitle}</p>
+        <div className="relative z-10 flex min-h-[100dvh] flex-col justify-end px-4 pb-[max(11rem,calc(env(safe-area-inset-bottom)+5rem))] pt-16">
           <button
             type="button"
-            onClick={() => void resetToWelcome()}
-            className="mt-10 flex w-full max-w-xs items-center justify-center gap-2 rounded-full bg-gradient-to-br from-aura-secondary-container to-cyan-600 py-4 text-base font-bold text-white shadow-xl transition active:scale-[0.98]"
+            onClick={beginFeedback}
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-cyan-200/35 bg-black/30 py-4 text-base font-semibold text-cyan-50 shadow-lg backdrop-blur-md ring-1 ring-cyan-400/20 transition hover:bg-black/40 active:scale-[0.99] sm:text-lg"
           >
-            Done
-            <span aria-hidden>↻</span>
+            <span aria-hidden>🎤</span>
+            Start feedback
+            <span aria-hidden>→</span>
           </button>
         </div>
       </main>
     );
   }
 
+  if (phase === "exit") {
+    return (
+      <main className="relative isolate mx-auto min-h-[100dvh] w-full max-w-lg overflow-hidden bg-black">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black/65 via-black/35 to-transparent" />
+        <header className="absolute inset-x-0 top-0 z-20">
+          <div className="mx-3 mt-3 rounded-2xl border border-white/15 bg-black/45 px-4 py-2 backdrop-blur-md">
+            <p className="text-center text-sm font-semibold tracking-wide text-cyan-100">Aura Voice Feedback</p>
+          </div>
+        </header>
+        <video
+          ref={exitVideoRef}
+          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
+          autoPlay
+          playsInline
+          preload="auto"
+          onEnded={() => void resetToWelcome()}
+          onError={() => void resetToWelcome()}
+          aria-label="Thank you"
+        >
+          <source src={auraExitVideo} type="video/mp4" />
+        </video>
+      </main>
+    );
+  }
+
   return (
     <main
-      className="relative mx-auto flex min-h-screen w-full max-w-lg flex-col bg-aura-bg"
+      className="relative mx-auto flex min-h-[100dvh] w-full max-w-lg flex-col bg-aura-bg"
       style={{
         backgroundImage: `linear-gradient(rgba(5,20,36,0.92), rgba(5,20,36,0.95)), url(${sessionBackdrop})`,
         backgroundSize: "cover",
@@ -534,122 +538,85 @@ export default function App() {
         </div>
       </header>
 
-      <section className="flex flex-1 flex-col px-4 pb-6 pt-4">
-        <p className="text-center text-[10px] uppercase tracking-widest text-aura-outline">
+      <section className="flex min-h-0 flex-1 flex-col px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1">
+        <p className="shrink-0 text-center text-[10px] uppercase tracking-widest text-aura-outline">
           Voice · English only · TTS: {AGENT_TTS_PROVIDER}
         </p>
-        <p className="mt-1 text-center text-xs text-aura-on-variant">
+        <p className="shrink-0 text-center text-[11px] text-aura-on-variant">
           LiveKit: <span className="text-aura-tertiary">{livekitState}</span>
         </p>
 
-        <div className="mt-6 flex flex-1 flex-col items-center">
-          <div
-            className={`relative w-full max-w-[280px] overflow-hidden rounded-[2.5rem] border border-white/10 bg-aura-surface/40 shadow-2xl backdrop-blur-md ${
-              orbState === "speaking"
-                ? "ai-orb-glow-speaking"
-                : orbState === "listening"
-                  ? "ai-orb-glow-listening"
-                  : ""
-            }`}
-          >
-            <img alt="Aura voice guide" className="aspect-square w-full object-cover" src={avatarImg} />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#051424]/90 via-transparent to-transparent" />
-            <div className="absolute bottom-3 left-1/2 flex w-[88%] -translate-x-1/2 items-end justify-center gap-1 rounded-full border border-cyan-400/20 bg-black/30 px-3 py-2.5 backdrop-blur">
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((bar) => (
-                <span
-                  key={bar}
-                  className={`ai-wave-bar ai-wave-bar-${waveState}`}
-                  style={{ animationDelay: `${bar * 0.07}s` }}
-                />
-              ))}
+        <div className="flex min-h-0 flex-1 flex-col">
+          <div className="flex min-h-0 flex-1 items-stretch justify-center py-2">
+            <div
+              className={`relative w-full max-h-[min(72dvh,640px)] min-h-[min(52dvh,420px)] flex-1 overflow-hidden rounded-[1.75rem] border border-white/10 bg-aura-surface/40 shadow-2xl backdrop-blur-md sm:rounded-[2.25rem] ${
+                orbState === "speaking"
+                  ? "ai-orb-glow-speaking"
+                  : orbState === "listening"
+                    ? "ai-orb-glow-listening"
+                    : ""
+              }`}
+            >
+              <img
+                alt="Aura voice guide"
+                className="h-full w-full object-cover object-[center_15%]"
+                src={avatarImg}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#051424]/88 via-transparent to-transparent" />
+              <div className="absolute bottom-3 left-1/2 flex w-[88%] max-w-sm -translate-x-1/2 items-end justify-center gap-1 rounded-full border border-cyan-400/20 bg-black/35 px-3 py-2.5 backdrop-blur">
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((bar) => (
+                  <span
+                    key={bar}
+                    className={`ai-wave-bar ai-wave-bar-${waveState}`}
+                    style={{ animationDelay: `${bar * 0.07}s` }}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="mt-4 flex items-center gap-2 rounded-full border border-aura-tertiary/30 bg-black/50 px-4 py-2 backdrop-blur">
-            <span className="text-sm text-aura-tertiary" aria-hidden>
-              🎤
-            </span>
-            <span className="text-[11px] font-semibold uppercase tracking-widest text-aura-tertiary">
-              {livekitState === "connected" ? (aiSpeaking ? "Aura is speaking…" : "Listening…") : "Connecting…"}
-            </span>
-          </div>
+          <div className="shrink-0 space-y-2 pt-1">
+            <div className="flex justify-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-aura-tertiary/30 bg-black/55 px-4 py-2 backdrop-blur">
+                <span className="text-sm text-aura-tertiary" aria-hidden>
+                  🎤
+                </span>
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-aura-tertiary">
+                  {livekitState === "connected" ? (aiSpeaking ? "Aura is speaking…" : "Listening…") : "Connecting…"}
+                </span>
+              </div>
+            </div>
 
-          <div className="glass-panel mt-6 w-full max-w-md rounded-xl p-4 text-left">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-aura-tertiary">Live caption</p>
-            <p className="mt-2 text-sm leading-relaxed text-aura-on-surface">
-              {liveCaptionText || "Captions appear when the agent speaks (LiveKit agent mode)."}
-            </p>
-          </div>
+            {livekitError ? <p className="max-w-md px-1 text-center text-xs text-rose-300">{livekitError}</p> : null}
 
-          {livekitError ? <p className="mt-3 max-w-md text-center text-xs text-rose-300">{livekitError}</p> : null}
-        </div>
-
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-          <button
-            type="button"
-            onClick={() => setSummaryOpen((v) => !v)}
-            className={`rounded-full border px-4 py-2 text-xs ${
-              summaryOpen ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-100" : "border-white/10 bg-white/5 text-slate-200"
-            }`}
-          >
-            Summary
-          </button>
-        </div>
-
-        <div className="mt-4">
-          {livekitState === "connected" ? (
-            <button
-              type="button"
-              onClick={() => void endCall()}
-              className="flex w-full items-center justify-center gap-2 rounded-full border border-rose-400/30 bg-rose-600/25 py-4 text-sm font-semibold uppercase tracking-wide text-rose-100"
-            >
-              End session
-            </button>
-          ) : (
-            <>
+            {livekitState === "connected" ? (
               <button
                 type="button"
-                onClick={() => void startCall()}
-                disabled={isStarting}
-                className={`w-full rounded-full py-4 text-base font-semibold transition ${
-                  isStarting ? "cursor-not-allowed bg-cyan-500/10 text-cyan-200/60" : "bg-cyan-500/25 text-cyan-50 hover:bg-cyan-500/35"
-                }`}
+                onClick={() => void endCall()}
+                className="flex w-full items-center justify-center gap-2 rounded-full border border-rose-400/30 bg-rose-600/25 py-3.5 text-sm font-semibold uppercase tracking-wide text-rose-100"
               >
-                {isStarting ? "Starting…" : hasEverConnected ? "Reconnect" : "Start voice session"}
+                End session
               </button>
-              {requiresManualStart ? (
-                <p className="mt-2 text-center text-[11px] text-aura-on-variant">iOS: tap Start to connect the microphone.</p>
-              ) : null}
-            </>
-          )}
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => void startCall()}
+                  disabled={isStarting}
+                  className={`w-full rounded-full py-3.5 text-base font-semibold transition ${
+                    isStarting ? "cursor-not-allowed bg-cyan-500/10 text-cyan-200/60" : "bg-cyan-500/25 text-cyan-50 hover:bg-cyan-500/35"
+                  }`}
+                >
+                  {isStarting ? "Starting…" : hasEverConnected ? "Reconnect" : "Start voice session"}
+                </button>
+                {requiresManualStart ? (
+                  <p className="text-center text-[11px] text-aura-on-variant">iOS: tap Start to connect the microphone.</p>
+                ) : null}
+              </>
+            )}
+          </div>
         </div>
       </section>
-
-      <div
-        className={`pointer-events-none fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-lg px-4 pb-4 transition-all duration-300 ${
-          summaryOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-        }`}
-      >
-        <div
-          className={`rounded-2xl border border-cyan-500/25 bg-[#0b1220]/95 p-4 shadow-2xl backdrop-blur-xl ${
-            summaryOpen ? "pointer-events-auto" : "pointer-events-none"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-cyan-200">Summary</p>
-            <button
-              type="button"
-              onClick={() => setSummaryOpen(false)}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-200"
-            >
-              Close
-            </button>
-          </div>
-          <div className="mt-2 max-h-40 overflow-y-auto rounded-xl border border-white/10 bg-black/25 p-3 text-sm text-cyan-50">
-            {liveCaptionText || "Waiting for the agent…"}
-          </div>
-        </div>
-      </div>
     </main>
   );
 }

@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "aiagents-frontend/**"
+      - "feedback-agent/**"
       - "frontend/**"
       - "backend/**"
       - "livekit-agent/**"
@@ -12,6 +13,11 @@ on:
     inputs:
       build_aiagents_frontend:
         description: "Build aiagents-frontend image"
+        required: false
+        default: false
+        type: boolean
+      build_feedback_agent:
+        description: "Build feedback-agent image"
         required: false
         default: false
         type: boolean
@@ -39,6 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       aiagents_frontend: ${{ steps.filter.outputs.aiagents_frontend }}
+      feedback_agent: ${{ steps.filter.outputs.feedback_agent }}
       frontend: ${{ steps.filter.outputs.frontend }}
       backend: ${{ steps.filter.outputs.backend }}
       livekit_agent: ${{ steps.filter.outputs.livekit_agent }}
@@ -53,6 +60,8 @@ jobs:
           filters: |
             aiagents_frontend:
               - 'aiagents-frontend/**'
+            feedback_agent:
+              - 'feedback-agent/**'
             frontend:
               - 'frontend/**'
             backend:
@@ -93,6 +102,43 @@ jobs:
         with:
           context: ./aiagents-frontend
           file: ./aiagents-frontend/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  build-feedback-agent:
+    needs: detect-changes
+    if: |
+      (github.event_name == 'push' && needs.detect-changes.outputs.feedback_agent == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.build_feedback_agent == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Generate Docker tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.ACR_LOGIN_SERVER }}/feedback-agent
+          tags: |
+            type=raw,value=${{ github.run_id }}
+
+      - name: Build and push feedback-agent
+        uses: docker/build-push-action@v6
+        with:
+          context: ./feedback-agent
+          file: ./feedback-agent/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

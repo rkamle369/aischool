@@ -4,6 +4,7 @@ import auraVideo from "../aura-entry.mp4";
 import auraExitVideo from "../aura-exit.mp4";
 import sessionBackdrop from "../ai_feedback_session/screen.png";
 import avatarImg from "../image.png/screen.png";
+import auraLogo from "/Users/rohitk/.cursor/projects/Users-rohitk-github-aischool/assets/image-35d60eca-5f84-47ff-99a9-700b20371fa0.png";
 
 const runtimeConfig = window.__APP_CONFIG__ || {};
 const API_BASE_URL = runtimeConfig.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
@@ -12,11 +13,6 @@ const LIVEKIT_AGENT_MODE = (runtimeConfig.VITE_LIVEKIT_AGENT_MODE || import.meta
 const AURA_FEEDBACK_SECONDS = Number(
   runtimeConfig.VITE_AURA_FEEDBACK_SECONDS || import.meta.env.VITE_AURA_FEEDBACK_SECONDS || 300
 );
-const AGENT_TTS_PROVIDER = (
-  runtimeConfig.VITE_AGENT_TTS_PROVIDER ||
-  import.meta.env.VITE_AGENT_TTS_PROVIDER ||
-  "openai"
-).toLowerCase();
 
 /** Must match `livekit-agent/agent_prompts.json` → `feedback` and room prefix in `agent.py`. */
 const FEEDBACK_AGENT = {
@@ -445,6 +441,17 @@ export default function App() {
     }
   }, [startCall]);
 
+  const topBrandBar = (
+    <header className="absolute inset-x-0 top-0 z-20">
+      <div className="flex items-center justify-center gap-3 border-b border-white/15 bg-black/50 px-3 py-2.5 backdrop-blur-md">
+        <img alt="Aura logo" className="h-10 w-10 rounded-md object-cover" src={auraLogo} />
+        <p className="bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-3xl font-black leading-none tracking-[0.06em] text-transparent">
+          AURA
+        </p>
+      </div>
+    </header>
+  );
+
   if (phase === "welcome") {
     return (
       <main className="relative isolate mx-auto min-h-[100dvh] w-full max-w-lg overflow-hidden bg-black">
@@ -460,27 +467,37 @@ export default function App() {
         >
           <source src={auraVideo} type="video/mp4" />
         </video>
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black/65 via-black/35 to-transparent" />
-        <header className="absolute inset-x-0 top-0 z-20">
-          <div className="mx-3 mt-3 rounded-2xl border border-white/15 bg-black/45 px-4 py-2 backdrop-blur-md">
-            <p className="text-center text-sm font-semibold tracking-wide text-cyan-100">Aura Voice Feedback</p>
-          </div>
-        </header>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black/70 via-black/35 to-transparent" />
+        {topBrandBar}
         {/* Bottom readability strip for the CTA only */}
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-48 bg-gradient-to-t from-[#051424]/95 via-[#051424]/55 to-transparent"
           aria-hidden
         />
 
-        <div className="relative z-10 flex min-h-[100dvh] flex-col justify-end px-4 pb-[max(11rem,calc(env(safe-area-inset-bottom)+5rem))] pt-16">
+        <div className="relative z-10 flex min-h-[100dvh] flex-col justify-end px-4 pb-[max(12rem,calc(env(safe-area-inset-bottom)+6rem))] pt-16">
           <button
             type="button"
             onClick={beginFeedback}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-cyan-200/35 bg-black/30 py-4 text-base font-semibold text-cyan-50 shadow-lg backdrop-blur-md ring-1 ring-cyan-400/20 transition hover:bg-black/40 active:scale-[0.99] sm:text-lg"
+            className="flex w-full items-center justify-center rounded-full border border-slate-700 bg-gradient-to-r from-[#171322] via-[#141a27] to-[#122633] px-6 py-5 text-2xl font-semibold text-white shadow-[0_16px_42px_rgba(0,0,0,0.62)] ring-1 ring-slate-500/40 transition hover:brightness-110 active:scale-[0.99]"
           >
-            <span aria-hidden>🎤</span>
-            Start feedback
-            <span aria-hidden>→</span>
+            <span className="cta-zoom-content flex items-center gap-4">
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                className="h-9 w-9"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="9" y="3" width="6" height="12" rx="3" />
+                <path d="M5 11a7 7 0 0 0 14 0" />
+                <path d="M12 18v3" />
+              </svg>
+              Start feedback
+            </span>
           </button>
         </div>
       </main>
@@ -490,12 +507,8 @@ export default function App() {
   if (phase === "exit") {
     return (
       <main className="relative isolate mx-auto min-h-[100dvh] w-full max-w-lg overflow-hidden bg-black">
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black/65 via-black/35 to-transparent" />
-        <header className="absolute inset-x-0 top-0 z-20">
-          <div className="mx-3 mt-3 rounded-2xl border border-white/15 bg-black/45 px-4 py-2 backdrop-blur-md">
-            <p className="text-center text-sm font-semibold tracking-wide text-cyan-100">Aura Voice Feedback</p>
-          </div>
-        </header>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black/70 via-black/35 to-transparent" />
+        {topBrandBar}
         <video
           ref={exitVideoRef}
           className="absolute inset-0 z-0 h-full w-full object-cover object-center"
@@ -522,11 +535,11 @@ export default function App() {
       }}
     >
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#12141d]/85 px-4 py-3 backdrop-blur-xl">
-        <div className="flex min-w-0 flex-1 items-center gap-2">
-          <span className="text-aura-tertiary" aria-hidden>
-            ◆
+        <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
+          <img alt="Aura logo" className="h-8 w-8 rounded-md object-cover" src={auraLogo} />
+          <span className="bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-2xl font-black tracking-[0.06em] text-transparent">
+            AURA
           </span>
-          <span className="truncate text-sm font-bold text-aura-on-surface">Aura Feedback</span>
         </div>
         <div
           className={`shrink-0 rounded-full border px-3 py-1.5 font-mono text-sm font-semibold tabular-nums ${
@@ -539,13 +552,6 @@ export default function App() {
       </header>
 
       <section className="flex min-h-0 flex-1 flex-col px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1">
-        <p className="shrink-0 text-center text-[10px] uppercase tracking-widest text-aura-outline">
-          Voice · English only · TTS: {AGENT_TTS_PROVIDER}
-        </p>
-        <p className="shrink-0 text-center text-[11px] text-aura-on-variant">
-          LiveKit: <span className="text-aura-tertiary">{livekitState}</span>
-        </p>
-
         <div className="flex min-h-0 flex-1 flex-col">
           <div className="flex min-h-0 flex-1 items-stretch justify-center py-2">
             <div
@@ -588,6 +594,10 @@ export default function App() {
             </div>
 
             {livekitError ? <p className="max-w-md px-1 text-center text-xs text-rose-300">{livekitError}</p> : null}
+
+            <p className="text-center text-[11px] text-aura-on-variant">
+              LiveKit: <span className="text-aura-tertiary">{livekitState}</span>
+            </p>
 
             {livekitState === "connected" ? (
               <button

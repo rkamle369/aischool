@@ -93,3 +93,18 @@ body {
     box-shadow: 0 0 0 1px rgba(71, 214, 255, 0.3), 0 0 48px rgba(49, 49, 192, 0.35);
   }
 }
+
+.cta-zoom-content {
+  transform-origin: center;
+  animation: cta-zoom 1.9s ease-in-out infinite;
+}
+
+@keyframes cta-zoom {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}

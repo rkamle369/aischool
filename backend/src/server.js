@@ -1,6 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import adminRoutes from "./routes/adminRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import coursesRoutes from "./routes/coursesRoutes.js";
 import livekitRoutes from "./routes/livekitRoutes.js";
@@ -31,6 +32,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (_req, res) => {
   res.json({ ok: true, message: "API is working" });
@@ -43,6 +45,7 @@ app.get("/health", (_req, res) => {
 app.use("/courses", coursesRoutes);
 app.use("/chat", chatRoutes);
 app.use("/livekit", livekitRoutes);
+app.use("/admin", adminRoutes);
 
 app.listen(port, host, () => {
   console.log(`Backend server running at http://${host}:${port}`);

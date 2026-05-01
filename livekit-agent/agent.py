@@ -86,6 +86,8 @@ class AITutor(Agent):
 
 def _agent_type_from_room_name(room_name: str) -> str:
     name = (room_name or "").lower()
+    if name.startswith("agent-aura-feedback"):
+        return "aura-feedback"
     if name.startswith("agent-feedback"):
         return "feedback"
     if name.startswith("agent-interview"):

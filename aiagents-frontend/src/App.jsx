@@ -28,6 +28,7 @@ const AGENT_TTS_PROVIDER = (
 const INVALID_CLOSE_PHRASE = "your response is not correct. we are closing this session now.";
 const CONNECT_TIMEOUT_MS = 15000;
 const TOKEN_TIMEOUT_MS = 10000;
+const AUDIO_UNLOCK_TIMEOUT_MS = 3000;
 
 function normalizeLiveKitUrl(rawUrl) {
   const value = (rawUrl || "").trim().replace(/\/+$/, "");
@@ -102,10 +103,14 @@ export default function App() {
         "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="
       );
       primer.muted = true;
-      await primer.play();
+      await withTimeout(
+        primer.play(),
+        AUDIO_UNLOCK_TIMEOUT_MS,
+        "Audio unlock timed out; continuing with connection attempt."
+      );
       primer.pause();
     } catch {
-      // best-effort
+      // best-effort; do not block call setup on iOS autoplay quirks
     }
   }, []);
 
@@ -171,20 +176,24 @@ export default function App() {
 
     const controller = new AbortController();
     const tokenTimeout = setTimeout(() => controller.abort(), TOKEN_TIMEOUT_MS);
-    const tokenResponse = await fetch(`${API_BASE_URL}/livekit/token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      signal: controller.signal,
-      body: JSON.stringify({
-        roomName,
-        participantName,
-        // Backend will forward this as dispatch metadata; the agent uses it to pick correct prompts.
-        tutorContext: {
-          agentType: selectedAgent.id
-        }
-      })
-    });
-    clearTimeout(tokenTimeout);
+    let tokenResponse;
+    try {
+      tokenResponse = await fetch(`${API_BASE_URL}/livekit/token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          roomName,
+          participantName,
+          // Backend will forward this as dispatch metadata; the agent uses it to pick correct prompts.
+          tutorContext: {
+            agentType: selectedAgent.id
+          }
+        })
+      });
+    } finally {
+      clearTimeout(tokenTimeout);
+    }
 
     if (!tokenResponse.ok) {
       let details = "";

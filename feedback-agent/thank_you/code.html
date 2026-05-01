@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aura Feedback - Thank You</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#2e303a",
+                        "outline": "#919096",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#d4e4fa",
+                        "inverse-primary": "#5c5e69",
+                        "secondary": "#c0c1ff",
+                        "tertiary-fixed": "#b6ebff",
+                        "surface-dim": "#051424",
+                        "primary-fixed-dim": "#c5c5d2",
+                        "on-primary-fixed-variant": "#454651",
+                        "surface-container": "#122131",
+                        "primary-fixed": "#e1e1ef",
+                        "on-tertiary": "#003543",
+                        "surface-container-lowest": "#010f1f",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#b0b2ff",
+                        "on-secondary-fixed": "#07006c",
+                        "secondary-container": "#3131c0",
+                        "inverse-on-surface": "#233143",
+                        "surface-bright": "#2c3a4c",
+                        "on-surface-variant": "#c7c6cc",
+                        "on-primary-container": "#7d7e8a",
+                        "surface-variant": "#273647",
+                        "tertiary": "#47d6ff",
+                        "on-background": "#d4e4fa",
+                        "surface": "#051424",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#001f28",
+                        "tertiary-fixed-dim": "#47d6ff",
+                        "tertiary-container": "#00171e",
+                        "on-tertiary-container": "#008aa9",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#273647",
+                        "outline-variant": "#46464b",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "on-secondary": "#1000a9",
+                        "surface-container-low": "#0d1c2d",
+                        "on-primary-fixed": "#191b24",
+                        "secondary-fixed": "#e1e0ff",
+                        "background": "#051424",
+                        "on-surface": "#d4e4fa",
+                        "surface-tint": "#c5c5d2",
+                        "primary": "#c5c5d2",
+                        "primary-container": "#12141d",
+                        "surface-container-high": "#1c2b3c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "lg": "40px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "margin": "32px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #051424;
+            color: #d4e4fa;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ai-gradient-text {
+            background: linear-gradient(to right, #c0c1ff, #47d6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .ai-button-gradient {
+            background: linear-gradient(135deg, #3131c0 0%, #47d6ff 100%);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .ai-button-gradient:active {
+            transform: scale(0.95);
+        }
+        .pulse-glow {
+            box-shadow: 0 0 30px rgba(71, 214, 255, 0.2);
+            animation: pulse 3s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-hidden">
+<main class="relative min-h-screen flex items-center justify-center px-gutter overflow-hidden">
+<!-- Subtle Ambient Glows -->
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-secondary/10 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-tertiary/10 blur-[120px] rounded-full pointer-events-none"></div>
+<!-- Success Content Container -->
+<div class="relative z-10 w-full max-w-2xl flex flex-col items-center text-center">
+<!-- Success Illustration / Image Section -->
+<div class="relative mb-md group">
+<div class="absolute inset-0 bg-tertiary/20 blur-3xl rounded-full scale-110 opacity-50"></div>
+<div class="glass-panel p-2 rounded-[2.5rem] relative overflow-hidden">
+<img class="w-48 h-48 md:w-64 md:h-64 object-cover rounded-[2rem] shadow-2xl" data-alt="A highly detailed and luminous digital illustration of a stylized crystalline checkmark floating within a swirling nebula of soft indigo and electric blue energy. The light-mode aesthetic is achieved through high-contrast highlights and ethereal glowing particles. The mood is celebratory and serene, using a sophisticated dark palette of deep charcoal with vibrant cyan and violet accents. The visual style is modern glassmorphism with high transparency and smooth gradients." src="https://lh3.googleusercontent.com/aida/ADBb0ujdWQNitxY-5NTCpcKL-v8mFk2svd9atrVKqu7mQzlzYvyTeRF3c87Q3r8rP1TcmZmsoAuqmlw2GN07T2XDQagPvfAW_0mX9Cm-SPvueyirNe76GzqERMXG9gWTggWWWdd8w3cXXQwKyCebJE6ghOQMtqQ4o67vrND-zoj9N0A4IIx28ssLZanLoYUIg4cgA1CTf6snsNyWm6iETyxieXz0Rm-AGhNwlQfSRTMXrs_6UriaJDtWza0E6ejCaFQDLanRDS0koOKW5Q"/>
+<!-- Floating Icon Overlay -->
+<div class="absolute bottom-4 right-4 bg-tertiary text-on-tertiary p-3 rounded-2xl shadow-lg flex items-center justify-center pulse-glow">
+<span class="material-symbols-outlined text-3xl" data-weight="fill">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Message Block -->
+<div class="space-y-sm mb-xl">
+<h1 class="font-headline-xl text-headline-xl ai-gradient-text">
+                    Thank you for your feedback!
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto">
+                    Your insights help Aura evolve. We've processed your submission and the AI has been updated with your unique perspective.
+                </p>
+</div>
+<!-- Data Visual Hint (Bento-lite style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm w-full mb-xl">
+<div class="glass-panel p-md rounded-xl flex items-center gap-md text-left">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-secondary uppercase tracking-wider">Analysis Status</p>
+<p class="font-headline-md text-headline-md text-on-surface">Synchronized</p>
+</div>
+</div>
+<div class="glass-panel p-md rounded-xl flex items-center gap-md text-left">
+<div class="w-12 h-12 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-tertiary uppercase tracking-wider">Privacy Shield</p>
+<p class="font-headline-md text-headline-md text-on-surface">Data Purged</p>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<div class="w-full max-w-sm">
+<button class="ai-button-gradient w-full py-md px-xl rounded-full text-white font-bold text-body-lg shadow-xl hover:shadow-tertiary/20 flex items-center justify-center gap-sm group">
+<span>Done &amp; Reset</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">restart_alt</span>
+</button>
+<p class="mt-md font-label-md text-label-md text-outline uppercase tracking-widest opacity-60">
+                    Session expires in 30s
+                </p>
+</div>
+</div>
+<!-- Background Decorative Elements -->
+<div class="absolute inset-0 pointer-events-none opacity-20">
+<div class="absolute top-1/4 left-10 w-2 h-2 bg-tertiary rounded-full blur-[1px]"></div>
+<div class="absolute top-1/3 right-20 w-3 h-3 bg-secondary rounded-full blur-[2px]"></div>
+<div class="absolute bottom-1/4 left-1/4 w-1.5 h-1.5 bg-primary rounded-full blur-[1px]"></div>
+<svg class="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="line-grad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:rgba(71,214,255,0.1); stop-opacity:0"></stop>
+<stop offset="50%" style="stop-color:rgba(71,214,255,0.2); stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:rgba(71,214,255,0.1); stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+<path d="M-100 400 Q 400 200 900 600" fill="transparent" stroke="url(#line-grad)" stroke-width="1"></path>
+<path d="M200 -100 Q 600 500 1100 200" fill="transparent" stroke="url(#line-grad)" stroke-width="1"></path>
+</svg>
+</div>
+</main>
+<!-- Navigation Shell Suppressed as per "Success/Confirmation" Rule in Design System Guidance -->
+</body></html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#2e303a",
+                    "outline": "#919096",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "error-container": "#93000a",
+                    "inverse-surface": "#d4e4fa",
+                    "inverse-primary": "#5c5e69",
+                    "secondary": "#c0c1ff",
+                    "tertiary-fixed": "#b6ebff",
+                    "surface-dim": "#051424",
+                    "primary-fixed-dim": "#c5c5d2",
+                    "on-primary-fixed-variant": "#454651",
+                    "surface-container": "#122131",
+                    "primary-fixed": "#e1e1ef",
+                    "on-tertiary": "#003543",
+                    "surface-container-lowest": "#010f1f",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "error": "#ffb4ab",
+                    "on-secondary-container": "#b0b2ff",
+                    "on-secondary-fixed": "#07006c",
+                    "secondary-container": "#3131c0",
+                    "inverse-on-surface": "#233143",
+                    "surface-bright": "#2c3a4c",
+                    "on-surface-variant": "#c7c6cc",
+                    "on-primary-container": "#7d7e8a",
+                    "surface-variant": "#273647",
+                    "tertiary": "#47d6ff",
+                    "on-background": "#d4e4fa",
+                    "surface": "#051424",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#001f28",
+                    "tertiary-fixed-dim": "#47d6ff",
+                    "tertiary-container": "#00171e",
+                    "on-tertiary-container": "#008aa9",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-highest": "#273647",
+                    "outline-variant": "#46464b",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "on-secondary": "#1000a9",
+                    "surface-container-low": "#0d1c2d",
+                    "on-primary-fixed": "#191b24",
+                    "secondary-fixed": "#e1e0ff",
+                    "background": "#051424",
+                    "on-surface": "#d4e4fa",
+                    "surface-tint": "#c5c5d2",
+                    "primary": "#c5c5d2",
+                    "primary-container": "#12141d",
+                    "surface-container-high": "#1c2b3c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "4px",
+                    "lg": "40px",
+                    "md": "24px",
+                    "sm": "16px",
+                    "xl": "64px",
+                    "xs": "8px",
+                    "gutter": "24px",
+                    "margin": "32px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ai-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            height: 48px;
+        }
+        .wave-bar {
+            width: 3px;
+            background: linear-gradient(to bottom, #47d6ff, #3131c0);
+            border-radius: 9999px;
+        }
+        @keyframes pulse-wave {
+            0%, 100% { height: 8px; opacity: 0.5; }
+            50% { height: 32px; opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-[#12141D]/80 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-500" data-icon="bubble_chart">bubble_chart</span>
+<span class="text-xl font-black bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent font-inter tracking-tight">Aura Feedback</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-400 hover:text-cyan-400 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center pt-24 pb-32 px-6">
+<!-- AI Agent Display -->
+<div class="relative w-full max-w-sm aspect-square mb-12">
+<!-- Glow Effect -->
+<div class="absolute inset-0 bg-secondary-container/20 blur-3xl rounded-full scale-110"></div>
+<!-- AI Tutor Frame -->
+<div class="relative w-full h-full rounded-[40px] overflow-hidden border border-white/10 shadow-2xl bg-surface-container/50 backdrop-blur-md">
+<img class="w-full h-full object-cover" data-alt="A sophisticated and friendly AI tutor with a humanoid but ethereal digital appearance, featuring glowing circuitry patterns on their face. The setting is a clean, minimalist laboratory with soft ambient blue lighting and floating holographic data panels. The overall aesthetic is cinematic and high-tech, using a palette of deep indigo, electric blue, and soft silver tones to convey luminous intelligence and calm guidance." src="https://lh3.googleusercontent.com/aida/ADBb0ujdWQNitxY-5NTCpcKL-v8mFk2svd9atrVKqu7mQzlzYvyTeRF3c87Q3r8rP1TcmZmsoAuqmlw2GN07T2XDQagPvfAW_0mX9Cm-SPvueyirNe76GzqERMXG9gWTggWWWdd8w3cXXQwKyCebJE6ghOQMtqQ4o67vrND-zoj9N0A4IIx28ssLZanLoYUIg4cgA1CTf6snsNyWm6iETyxieXz0Rm-AGhNwlQfSRTMXrs_6UriaJDtWza0E6ejCaFQDLanRDS0koOKW5Q"/>
+</div>
+<!-- Listening Badge (Conditional Visibility Indicator) -->
+<div class="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-[#12141D]/90 backdrop-blur-md border border-tertiary/30 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="mic" data-weight="fill" style="font-variation-settings: 'FILL' 1;">mic</span>
+<span class="font-label-md text-label-md text-tertiary uppercase tracking-widest">Listening...</span>
+</div>
+</div>
+<!-- AI Interaction Section -->
+<div class="w-full max-w-md text-center space-y-8">
+<div class="space-y-2">
+<h2 class="font-headline-md text-headline-md text-on-surface">Advanced Phonetics Analysis</h2>
+<p class="font-body-sm text-body-sm text-outline">Aura is analyzing your speech patterns in real-time.</p>
+</div>
+<!-- AI Voice Wave Animation -->
+<div class="ai-wave">
+<!-- Static representation of wave bars with varying heights -->
+<div class="wave-bar" style="height: 12px;"></div>
+<div class="wave-bar" style="height: 24px;"></div>
+<div class="wave-bar" style="height: 40px;"></div>
+<div class="wave-bar" style="height: 16px;"></div>
+<div class="wave-bar" style="height: 32px;"></div>
+<div class="wave-bar" style="height: 48px;"></div>
+<div class="wave-bar" style="height: 36px;"></div>
+<div class="wave-bar" style="height: 20px;"></div>
+<div class="wave-bar" style="height: 44px;"></div>
+<div class="wave-bar" style="height: 24px;"></div>
+<div class="wave-bar" style="height: 12px;"></div>
+</div>
+<!-- Feedback Insight Card (Glassmorphism) -->
+<div class="p-md rounded-xl bg-white/5 border border-white/10 backdrop-blur-lg text-left flex items-start gap-4">
+<div class="w-12 h-12 flex-shrink-0 rounded-lg bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-tertiary uppercase">Live Suggestion</span>
+<p class="font-body-md text-body-md text-on-surface mt-1">"Focus on the 'th' sound in 'Feedback'—aim for a softer dental placement."</p>
+</div>
+</div>
+</div>
+<!-- Action Control -->
+<div class="fixed bottom-12 left-0 w-full flex justify-center px-6">
+<button class="group flex items-center gap-3 px-8 py-4 bg-error-container text-on-error-container rounded-full shadow-lg active:scale-95 transition-all duration-200 border border-white/5">
+<span class="material-symbols-outlined text-xl group-hover:rotate-12 transition-transform" data-icon="call_end" data-weight="fill" style="font-variation-settings: 'FILL' 1;">call_end</span>
+<span class="font-label-md text-label-md uppercase tracking-wider">Finish Call</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar Shell (Included but secondary for focus) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-[#12141D]/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-8px_32px_rgba(0,0,0,0.3)] rounded-t-2xl md:hidden">
+<a class="flex flex-col items-center justify-center text-slate-500 p-2 hover:bg-white/5 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-inter text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-indigo-500/10 text-indigo-400 rounded-xl p-2 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)] border border-indigo-500/20 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings_voice">settings_voice</span>
+<span class="font-inter text-xs font-medium">Session</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 p-2 hover:bg-white/5 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-inter text-xs font-medium">History</span>
+</a>
+</nav>
+</body></html>

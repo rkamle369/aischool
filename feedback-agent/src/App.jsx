@@ -4,7 +4,6 @@ import auraVideo from "../aura-entry.mp4";
 import auraExitVideo from "../aura-exit.mp4";
 import sessionBackdrop from "../ai_feedback_session/screen.png";
 import avatarImg from "../image.png/screen.png";
-import auraLogo from "/Users/rohitk/.cursor/projects/Users-rohitk-github-aischool/assets/image-35d60eca-5f84-47ff-99a9-700b20371fa0.png";
 
 const runtimeConfig = window.__APP_CONFIG__ || {};
 const API_BASE_URL = runtimeConfig.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
@@ -64,6 +63,28 @@ async function withTimeout(promise, timeoutMs, message) {
 
 function buildRoomName(suffix) {
   return `${FEEDBACK_AGENT.roomPrefix}-${suffix}`;
+}
+
+function AuraLogoMark({ className = "h-10 w-10" }) {
+  return (
+    <svg viewBox="0 0 64 64" className={className} aria-hidden>
+      <defs>
+        <linearGradient id="aura-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#8b5cf6" />
+          <stop offset="100%" stopColor="#22d3ee" />
+        </linearGradient>
+      </defs>
+      <circle cx="32" cy="32" r="28" fill="none" stroke="url(#aura-grad)" strokeWidth="4" />
+      <path
+        d="M10 35c5 0 6-12 12-12s7 12 13 12 7-12 13-12 7 12 12 12"
+        fill="none"
+        stroke="url(#aura-grad)"
+        strokeWidth="4.5"
+        strokeLinecap="round"
+      />
+      <path d="M24 44l8-11 8 11" fill="none" stroke="url(#aura-grad)" strokeWidth="4.5" strokeLinecap="round" />
+    </svg>
+  );
 }
 
 export default function App() {
@@ -444,7 +465,7 @@ export default function App() {
   const topBrandBar = (
     <header className="absolute inset-x-0 top-0 z-20">
       <div className="flex items-center justify-center gap-3 border-b border-white/15 bg-black/50 px-3 py-2.5 backdrop-blur-md">
-        <img alt="Aura logo" className="h-10 w-10 rounded-md object-cover" src={auraLogo} />
+        <AuraLogoMark className="h-10 w-10" />
         <p className="bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-3xl font-black leading-none tracking-[0.06em] text-transparent">
           AURA
         </p>
@@ -536,7 +557,7 @@ export default function App() {
     >
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#12141d]/85 px-4 py-3 backdrop-blur-xl">
         <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
-          <img alt="Aura logo" className="h-8 w-8 rounded-md object-cover" src={auraLogo} />
+          <AuraLogoMark className="h-8 w-8" />
           <span className="bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-2xl font-black tracking-[0.06em] text-transparent">
             AURA
           </span>
